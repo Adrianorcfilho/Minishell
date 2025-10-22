@@ -2,7 +2,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
-
+#include <stdlib.h>
+#include <sys/types.h>
 
 int ft_strcmp(char *s1, char *s2)
 {
@@ -24,24 +25,37 @@ int main()
 	char *args[] = { NULL, NULL }; 	
    	char *env[] = { NULL };
 	
-	prompt = readline(">");
-	add_history(prompt);
+	using_history();
 	
-	args[0] = prompt;
 	
-	if(ft_strcmp(prompt, "pwd") == 0)
+	while (1)
 	{
-		char buf[10000];
+	
+		prompt = readline("🐚 ➤ ");
+		
+		if (!prompt)
+			break;
+			
+		add_history(prompt);	
+		
+		args[0] = prompt;
+	
+		if(ft_strcmp(prompt, "pwd") == 0)
+		{
+			char buf[10000];
 
-		getcwd(buf, 10000);
-		printf("%s\n", buf);
+			getcwd(buf, 10000);
+			printf("%s\n", buf);
+		}
+		else if(ft_strcmp(prompt, "cd") == 0)
+		{
+			
+		}
+		else if(execve(args[0], args, env ) == -1)
+			printf("%s: command not found.\n", prompt);
+			
+		free(prompt);
 	}
-	else if(ft_strcmp(prompt, "cd") == 0)
-	{
-		
-	}
-	else if (execve(args[0], args, env ) == -1)
-		printf("%s: command not found.\n", prompt);
-		
+
 	return 0;
 }
