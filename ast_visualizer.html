@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AST Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .examples {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            padding: 8px 16px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .canvas-container {
+            padding: 40px;
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .node {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover .node-rect {
+            filter: brightness(1.1);
+            stroke-width: 3;
+        }
+
+        .node-rect {
+            transition: all 0.3s;
+        }
+
+        .link {
+            fill: none;
+            stroke: #999;
+            stroke-width: 2;
+            opacity: 0.6;
+        }
+
+        .node-command .node-rect { fill: #4CAF50; }
+        .node-pipe .node-rect { fill: #2196F3; }
+        .node-redirect .node-rect { fill: #FF9800; }
+        .node-heredoc .node-rect { fill: #9C27B0; }
+
+        .node-text {
+            fill: white;
+            font-weight: 600;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .node-detail {
+            fill: white;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .legend {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            font-size: 18px;
+            padding: 60px 20px;
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌳 Shell AST Visualizer</h1>
+            <p>Visualize your shell command's Abstract Syntax Tree</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="commandInput" placeholder="Enter a shell command (e.g., cat file.txt | grep hello > output.txt)" />
+                <button onclick="visualize()">Visualize</button>
+            </div>
+            <div class="examples">
+                <button class="example-btn" onclick="loadExample('ls -la')">ls -la</button>
+                <button class="example-btn" onclick="loadExample('cat file.txt | grep hello')">cat | grep</button>
+                <button class="example-btn" onclick="loadExample('cat < input.txt > output.txt')">redirects</button>
+                <button class="example-btn" onclick="loadExample('ls | grep test | wc -l')">triple pipe</button>
+                <button class="example-btn" onclick="loadExample('cat << EOF')">heredoc</button>
+            </div>
+        </div>
+
+        <div class="canvas-container" id="canvas">
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 18c-3.31 0-6-2.69-6-6V9.11l6-2.73 6 2.73V14c0 3.31-2.69 6-6 6z"/>
+                </svg>
+                <div>Enter a shell command above to see its AST</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4CAF50;"></div>
+                <span>Command</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Pipe</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #FF9800;"></div>
+                <span>Redirect</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9C27B0;"></div>
+                <span>Heredoc</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function parseCommand(cmd) {
+            cmd = cmd.trim();
+            
+            // Parse pipes
+            if (cmd.includes('|')) {
+                const parts = cmd.split('|').map(s => s.trim());
+                let root = parseCommand(parts[0]);
+                for (let i = 1; i < parts.length; i++) {
+                    root = {
+                        type: 'PIPE',
+                        left: root,
+                        right: parseCommand(parts[i])
+                    };
+                }
+                return root;
+            }
+            
+            // Parse heredoc
+            if (cmd.includes('<<')) {
+                const parts = cmd.split('<<').map(s => s.trim());
+                return {
+                    type: 'HEREDOC',
+                    delimiter: parts[1] || 'EOF',
+                    left: parseCommand(parts[0])
+                };
+            }
+            
+            // Parse append redirect
+            if (cmd.includes('>>')) {
+                const parts = cmd.split('>>').map(s => s.trim());
+                return {
+                    type: 'REDIRECT_APPEND',
+                    filename: parts[1],
+                    left: parseCommand(parts[0])
+                };
+            }
+            
+            // Parse output redirect
+            if (cmd.includes('>')) {
+                const parts = cmd.split('>').map(s => s.trim());
+                return {
+                    type: 'REDIRECT_OUT',
+                    filename: parts[1],
+                    left: parseCommand(parts[0])
+                };
+            }
+            
+            // Parse input redirect
+            if (cmd.includes('<')) {
+                const parts = cmd.split('<').map(s => s.trim());
+                return {
+                    type: 'REDIRECT_IN',
+                    filename: parts[1],
+                    left: parseCommand(parts[0])
+                };
+            }
+            
+            // Parse command
+            const args = cmd.split(/\s+/).filter(s => s.length > 0);
+            return {
+                type: 'COMMAND',
+                args: args
+            };
+        }
+
+        function getNodeClass(type) {
+            if (type === 'COMMAND') return 'node-command';
+            if (type === 'PIPE') return 'node-pipe';
+            if (type.startsWith('REDIRECT')) return 'node-redirect';
+            if (type === 'HEREDOC') return 'node-heredoc';
+            return 'node-command';
+        }
+
+        function getNodeLabel(node) {
+            if (node.type === 'COMMAND') return node.args[0] || 'cmd';
+            return node.type.replace('_', ' ');
+        }
+
+        function getNodeDetail(node) {
+            if (node.type === 'COMMAND') return node.args.slice(1).join(' ');
+            if (node.filename) return node.filename;
+            if (node.delimiter) return node.delimiter;
+            return '';
+        }
+
+        function calculateLayout(node, x = 400, y = 50, level = 0) {
+            if (!node) return [];
+            
+            const nodeWidth = 120;
+            const nodeHeight = 60;
+            const verticalSpacing = 100;
+            const horizontalSpacing = 160;
+            
+            const nodes = [];
+            const links = [];
+            
+            node.x = x;
+            node.y = y;
+            nodes.push(node);
+            
+            let childY = y + verticalSpacing;
+            let totalWidth = 0;
+            
+            if (node.left) {
+                const leftX = x - horizontalSpacing / (level + 1);
+                const leftLayout = calculateLayout(node.left, leftX, childY, level + 1);
+                nodes.push(...leftLayout.nodes);
+                links.push(...leftLayout.links);
+                links.push({ source: node, target: node.left });
+                totalWidth += horizontalSpacing;
+            }
+            
+            if (node.right) {
+                const rightX = x + horizontalSpacing / (level + 1);
+                const rightLayout = calculateLayout(node.right, rightX, childY, level + 1);
+                nodes.push(...rightLayout.nodes);
+                links.push(...rightLayout.links);
+                links.push({ source: node, target: node.right });
+            }
+            
+            return { nodes, links };
+        }
+
+        function drawAST(ast) {
+            const canvas = document.getElementById('canvas');
+            const layout = calculateLayout(ast);
+            
+            if (layout.nodes.length === 0) {
+                canvas.innerHTML = '<div class="empty-state">Invalid command</div>';
+                return;
+            }
+            
+            const width = 800;
+            const height = Math.max(400, layout.nodes.length * 80);
+            
+            let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`;
+            
+            // Draw links
+            layout.links.forEach(link => {
+                svg += `<path class="link" d="M ${link.source.x},${link.source.y + 30} 
+                        C ${link.source.x},${(link.source.y + link.target.y) / 2} 
+                        ${link.target.x},${(link.source.y + link.target.y) / 2} 
+                        ${link.target.x},${link.target.y - 30}" />`;
+            });
+            
+            // Draw nodes
+            layout.nodes.forEach(node => {
+                const nodeClass = getNodeClass(node.type);
+                const label = getNodeLabel(node);
+                const detail = getNodeDetail(node);
+                
+                svg += `<g class="node ${nodeClass}">
+                    <rect class="node-rect" x="${node.x - 60}" y="${node.y - 30}" 
+                          width="120" height="60" rx="8" stroke="#333" stroke-width="2"/>
+                    <text class="node-text" x="${node.x}" y="${node.y - 5}" 
+                          text-anchor="middle">${label}</text>`;
+                
+                if (detail) {
+                    svg += `<text class="node-detail" x="${node.x}" y="${node.y + 12}" 
+                            text-anchor="middle">${detail.length > 15 ? detail.substring(0, 15) + '...' : detail}</text>`;
+                }
+                
+                svg += `</g>`;
+            });
+            
+            svg += '</svg>';
+            canvas.innerHTML = svg;
+        }
+
+        function visualize() {
+            const input = document.getElementById('commandInput').value;
+            if (!input.trim()) return;
+            
+            try {
+                const ast = parseCommand(input);
+                drawAST(ast);
+            } catch (e) {
+                document.getElementById('canvas').innerHTML = 
+                    '<div class="empty-state">Error parsing command</div>';
+            }
+        }
+
+        function loadExample(cmd) {
+            document.getElementById('commandInput').value = cmd;
+            visualize();
+        }
+
+        document.getElementById('commandInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') visualize();
+        });
+    </script>
+</body>
+</html>
