@@ -1,58 +1,33 @@
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <signal.h>
+#include "tokenizer.h"
+#include "AST.h"
+
+#include <mini_execution.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
 
-int	ft_strcmp(char *s1, char *s2)
+int main(int argc, char **argv)
 {
-	int	i;
+    t_token *tokens;
+    t_ast_node *ast;
 
-	i = 0;
-	while ((s1[i] || s2[i]) && s1[i] == s2[i])
-		i++;
-	return (s1[i] - s2[i]);
-}
+    if (argc < 2)
+    {
+        printf("Usage: %s <command>\n", argv[0]);
+        return (1);
+    }
 
-void	handler_signal(int sig)
-{
-	(void)sig;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_redisplay();
-}
+    tokens = tokenize(argv[1]);
 
-int	main(void)
-{
-	char	*prompt;
-	char	*args[] = {NULL, NULL};
-	char	*env[] = {NULL};
-	char	buf[10000];
-	char	*directory;
+    printf("=== TOKENS ===\n");
+    display_tokens(tokens);
 
-	using_history();
-	signal(SIGINT, handler_signal);
-	while (1)
-	{
-		prompt = readline("🐚 ➤ ");
-		if (!prompt)
-			break ;
-		add_history(prompt);
-		args[0] = prompt;
-		if (ft_strcmp(prompt, "pwd") == 0)
-		{
-			getcwd(buf, 10000);
-			printf("%s\n", buf);
-		}
-		else if (ft_strcmp(prompt, "exit") == 0)
-		{
-			exit(EXIT_SUCCESS);
-		}
-		else if (execve(args[0], args, env) == -1)
-			printf("%s: command not found.\n", prompt);
-		free(prompt);
-	}
-	return (0);
+    printf("\n=== AST ===\n");
+    ast = parse_pipeline(tokens);
+    display_ast(ast, 0);
+
+    printf("\n=== EXEC ===\n");
+    exec_ast(ast);
+
+    free_tokens(tokens);
+    free_ast(ast);
+    return (0);
 }

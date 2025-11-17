@@ -1,0 +1,1 @@
+#define USER_RW_OTHERS_R 0644
