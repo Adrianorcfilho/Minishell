@@ -1,30 +1,97 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <mini_execution.h>
 #include <AST.h>
-#include <stdlib.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-
 #include <error_log.h>
+#include <fcntl.h>
+#include <mini_execution.h>
 #include <permitions.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
-int exec_command(t_ast_node *node)
+int	ft_strcmp(char *s1, char *s2)
 {
-    pid_t pid;
+	int	i;
 
-    if (!node || node->type != NODE_COMMAND)
-        return (-1);
-    if (node->arg_count == 0)
-        return (0);
-    // if not built-in
-    pid = fork();
-    if (pid == 0)
-        execvp(node->args[0], node->args);
-    else if (pid > 0)
-        waitpid(pid, NULL, 0);
-    // if built in
-    return (0);
+	i = 0;
+	while ((s1[i] || s2[i]) && s1[i] == s2[i])
+		i++;
+	return (s1[i] - s2[i]);
+}
+
+int	is_builtin(const char *cmd)
+{
+	if (!cmd)
+		return (0);
+	if (strcmp(cmd, "exit") == 0)
+		return (1);
+	if (strcmp(cmd, "pwd") == 0)
+		return (1);
+	if (strcmp(cmd, "cd") == 0)
+		return (1);
+	return (0);
+}
+
+int	run_builtin(t_ast_node *node)
+{
+	char		cwd[4096];
+	const char	*path = node->args[1] ? node->args[1] : getenv("HOME");
+
+	if (!node || !node->args || !node->args[0])
+		return (-1);
+	if (strcmp(node->args[0], "exit") == 0)
+	{
+		printf("Entrou no meu exit function\n");
+		exit(EXIT_SUCCESS);
+	}
+	else if (strcmp(node->args[0], "pwd") == 0)
+	{
+		printf("Entrou no meu pwd function\n");
+		if (getcwd(cwd, sizeof(cwd)))
+			printf("%s\n", cwd);
+		else
+			perror("pwd");
+		return (0);
+	}
+	else if (strcmp(node->args[0], "cd") == 0)
+	{
+		printf("Entrou no meu CD function\n");
+		if (!path)
+		{
+			fprintf(stderr, "cd: HOME not set\n");
+			return (-1);
+		}
+		if (chdir(path) == -1)
+		{
+			perror("cd");
+			return (-1);
+		}
+		return (0);
+	}
+	return (-1);
+}
+
+int	exec_command(t_ast_node *node)
+{
+	pid_t	pid;
+
+	if (!node || node->type != NODE_COMMAND)
+		return (-1);
+	if (node->arg_count == 0)
+		return (0);
+	// new stuff here
+	if (is_builtin(node->args[0]))
+	{
+		return (run_builtin(node));
+	}
+	// if not built-in
+	pid = fork();
+	if (pid == 0)
+		execvp(node->args[0], node->args);
+	else if (pid > 0)
+		waitpid(pid, NULL, 0);
+	// if built in
+	return (0);
 }
 
 int exec_pipe(t_ast_node *node)

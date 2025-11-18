@@ -1,5 +1,5 @@
 NAME 	:= minishell
-CFLAGS	:= -g
+CFLAGS	:= -g -lreadline
 INCS	:= -I_inc/
 LIBS	:=
 
@@ -23,3 +23,6 @@ $(NAME): $(SRC)
 
 clean:
 	rm -f _src/*.o
+
+fclean: clean
+	@rm -f $(NAME)
