@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 09:35:38 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/25 09:35:39 by ide-abre         ###   ########.fr       */
+/*   Created: 2025/11/25 09:35:32 by ide-abre          #+#    #+#             */
+/*   Updated: 2025/11/25 09:35:33 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minilibft.h>
-
-int	ft_strlen(const char *s)
+int	ft_strcmp(const char *s1, const char *s2)
 {
 	int	i;
 
 	i = 0;
-	while (s[i])
+	while ((s1[i] || s2[i]) && s1[i] == s2[i])
 		i++;
-	return (i);
+	return (s1[i] - s2[i]);
 }

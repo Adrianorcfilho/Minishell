@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 09:35:38 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/25 09:35:39 by ide-abre         ###   ########.fr       */
+/*   Created: 2025/11/27 08:25:13 by ide-abre          #+#    #+#             */
+/*   Updated: 2025/11/27 08:27:12 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minilibft.h>
+#include <unistd.h>
 
-int	ft_strlen(const char *s)
+void	ft_putendl_fd(char *str, int fd)
 {
 	int	i;
 
 	i = 0;
-	while (s[i])
+	while (str[i])
+	{
+		write(fd, &str[i], 1);
 		i++;
-	return (i);
+	}
+	write(fd, "\n", 1);
 }

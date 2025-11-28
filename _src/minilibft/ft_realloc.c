@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_realloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 09:35:38 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/25 09:35:39 by ide-abre         ###   ########.fr       */
+/*   Created: 2025/11/27 00:32:10 by ide-abre          #+#    #+#             */
+/*   Updated: 2025/11/27 00:45:40 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minilibft.h>
 
-int	ft_strlen(const char *s)
+void	*ft_realloc(void *ptr, size_t size)
 {
-	int	i;
+	void	*new_ptr;
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+	if (ptr == NULL)
+		return (malloc(size));
+	if (!size)
+		return (ptr);
+	new_ptr = malloc(size);
+	ft_memcpy(new_ptr, ptr, size);
+	return (new_ptr);
 }

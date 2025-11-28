@@ -1,23 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   safe_fork.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 09:35:38 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/25 09:35:39 by ide-abre         ###   ########.fr       */
+/*   Created: 2025/11/25 09:34:28 by ide-abre          #+#    #+#             */
+/*   Updated: 2025/11/25 09:35:04 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minilibft.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
 
-int	ft_strlen(const char *s)
+pid_t	safe_fork(void)
 {
-	int	i;
+	pid_t	pid;
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+	pid = fork();
+	if (pid == -1)
+		perror("fork");
+	return (pid);
 }

@@ -1,23 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 09:35:38 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/25 09:35:39 by ide-abre         ###   ########.fr       */
+/*   Created: 2025/11/27 00:30:52 by ide-abre          #+#    #+#             */
+/*   Updated: 2025/11/27 00:45:48 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minilibft.h>
-
-int	ft_strlen(const char *s)
+char	*ft_strcpy(char *s1, char *s2)
 {
-	int	i;
+	unsigned int	i;
 
 	i = 0;
-	while (s[i])
+	while (s2[i])
+	{
+		s1[i] = s2[i];
 		i++;
-	return (i);
+	}
+	s1[i] = 0;
+	return (s1);
 }

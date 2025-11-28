@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   signals.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 09:35:38 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/25 09:35:39 by ide-abre         ###   ########.fr       */
+/*   Created: 2025/11/27 07:26:23 by ide-abre          #+#    #+#             */
+/*   Updated: 2025/11/27 07:52:02 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minilibft.h>
+#ifndef SIGNALS_H
+# define SIGNALS_H
 
-int	ft_strlen(const char *s)
-{
-	int	i;
+void	setup_signals(void);
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
+#endif
