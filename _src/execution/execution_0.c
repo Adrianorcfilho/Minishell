@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:46:10 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:03:54 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ int	exec_command(t_ast_node *node, t_map_str_str **env, int *last_exit)
 			cmd_path = node->args[0];
 		env_array = map_as_c_array(*env);
 		execve(cmd_path, node->args, env_array);
-		// execvp(node->args[0], node->args);
 		if (errno == ENOENT)
 		{
 			fprintf(stderr, "%s: command not found\n", node->args[0]);

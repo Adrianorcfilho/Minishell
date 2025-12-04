@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:46:48 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:37:07 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,36 @@ static int	setup_output_redirect(t_ast_node *node)
 		return (-1);
 	return (fd);
 }
+void	exe_redir_types(t_ast_node  *redirs[1024], int i, int *error, int *fds)
+{
+	if (redirs[i]->type == NODE_REDIRECT_IN)
+	{
+		fds[i] = open(redirs[i]->filename, O_RDONLY);
+		if (fds[i] == -1)
+		{
+			perror(redirs[i]->filename);
+			*error = 1;
+		}
+	}
+	else if (redirs[i]->type == NODE_REDIRECT_OUT)
+	{
+		fds[i] = open(redirs[i]->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fds[i] == -1)
+		{
+			perror(redirs[i]->filename);
+			*error = 1;
+		}
+	}
+	else
+	{
+		fds[i] = open(redirs[i]->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fds[i] == -1)
+		{
+			perror(redirs[i]->filename);
+			*error = 1;
+		}
+	}
+}
 
 int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
 {
@@ -83,7 +113,6 @@ int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
 	int			i;
 	int			error;
 
-	// Collect all redirections (they're in right-to-left order in AST)
 	count = 0;
 	curr = node;
 	while (curr && (curr->type == NODE_REDIRECT_IN
@@ -91,57 +120,24 @@ int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
 			|| curr->type == NODE_REDIRECT_APPEND))
 	{
 		redirs[count] = curr;
-		fds[count] = -1; // Initialize to invalid fd
+		fds[count] = -1;
 		count++;
 		curr = curr->left;
 	}
-	// Fork for redirection
 	pid = safe_fork();
 	if (pid == -1)
 		return (1);
-	if (pid == 0) // Child process
+	if (pid == 0)
 	{
 		error = 0;
-		// Open files left to right (reverse order in array)
-		// STOP immediately if any file fails to open
 		i = count - 1;
 		while (i >= 0 && !error)
 		{
-			if (redirs[i]->type == NODE_REDIRECT_IN)
-			{
-				fds[i] = open(redirs[i]->filename, O_RDONLY);
-				if (fds[i] == -1)
-				{
-					perror(redirs[i]->filename);
-					error = 1; // Stop opening more files
-				}
-			}
-			else if (redirs[i]->type == NODE_REDIRECT_OUT)
-			{
-				fds[i] = open(redirs[i]->filename, O_WRONLY | O_CREAT | O_TRUNC,
-						0644);
-				if (fds[i] == -1)
-				{
-					perror(redirs[i]->filename);
-					error = 1; // Stop opening more files
-				}
-			}
-			else // NODE_REDIRECT_APPEND
-			{
-				fds[i] = open(redirs[i]->filename,
-						O_WRONLY | O_CREAT | O_APPEND, 0644);
-				if (fds[i] == -1)
-				{
-					perror(redirs[i]->filename);
-					error = 1; // Stop opening more files
-				}
-			}
+			exe_redir_types(redirs, i, &error, fds);
 			i--;
 		}
-		// If ANY file failed to open, clean up and exit with error
 		if (error)
 		{
-			// Close all successfully opened files
 			i = 0;
 			while (i < count)
 			{
@@ -149,25 +145,21 @@ int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
 					close(fds[i]);
 				i++;
 			}
-			exit(1); // Exit with error - command should NOT run
+			exit(1);
 		}
-		// All files opened successfully - now apply redirections
-		// Apply in REVERSE order (same as opening order) so rightmost wins
 		i = count - 1;
 		while (i >= 0)
 		{
 			if (redirs[i]->type == NODE_REDIRECT_IN)
 				dup2(fds[i], STDIN_FILENO);
-			else // OUT or APPEND (both go to stdout)
+			else
 				dup2(fds[i], STDOUT_FILENO);
 			close(fds[i]);
 			i--;
 		}
-		// Execute command with redirections applied
 		result = exec_node(curr, env, status);
 		exit(result);
 	}
-	// Parent process
 	waitpid(pid, &wstatus, 0);
 	return (get_exit_status(wstatus));
 }

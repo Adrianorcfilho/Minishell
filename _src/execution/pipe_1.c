@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:49:18 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:44:42 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:06:30 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids)
 	i = 0;
 	while (i < pipeline->count)
 	{
-		// Create pipe for this command (if not last)
 		if (i < pipeline->count - 1)
 		{
 			if (pipe(fd) == -1)
@@ -57,12 +56,10 @@ int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids)
 		cmd_data = (t_cmd_exec){pipeline->cmds[i], pipeline->env,
 			pipeline->status, input_fd, output_fd};
 		pids[i] = exec_command_in_pipeline(&cmd_data);
-		// ✅ CRITICAL: Parent closes ALL FDs immediately after fork
 		if (output_fd != STDOUT_FILENO)
-			close(output_fd); // Close write end (child has it)
+			close(output_fd);
 		if (input_fd != STDIN_FILENO)
-			close(input_fd); // Close read end from previous pipe
-		// Save read end for next command's input
+			close(input_fd);
 		if (i < pipeline->count - 1)
 			input_fd = fd[0];
 		i++;

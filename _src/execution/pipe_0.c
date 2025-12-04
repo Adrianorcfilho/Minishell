@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:12:45 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:44:57 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:13:30 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,16 @@ int	exec_command_in_pipeline(t_cmd_exec *data)
 		return (-1);
 	if (pid == 0)
 	{
-		// Setup stdin
 		if (data->input_fd != STDIN_FILENO)
 		{
 			dup2(data->input_fd, STDIN_FILENO);
 			close(data->input_fd);
 		}
-		// Setup stdout
 		if (data->output_fd != STDOUT_FILENO)
 		{
 			dup2(data->output_fd, STDOUT_FILENO);
 			close(data->output_fd);
 		}
-		// ✅ ADD THIS: Close all unused file descriptors
 		fd = 3;
 		while (fd < 256)
 		{
@@ -102,9 +99,7 @@ int	wait_all_processes(pid_t *pids, int count)
 	i = 0;
 	while (i < count)
 	{
-		// ✅ Wait for ANY child, not in specific order
 		finished = waitpid(-1, &status, 0);
-		// Check if it's the last command in pipeline
 		if (finished == pids[count - 1])
 			last_status = get_exit_status(status);
 		i++;

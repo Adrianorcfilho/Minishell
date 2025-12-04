@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:10 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:47:55 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:03:39 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static int	export_handle_arg(char *arg, t_map_str_str **env)
 			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n",
 				arg);
 			free(key);
-			return (1); // invalid identifier
+			return (1);
 		}
 		free(key);
 		return (export_set_pair(arg, equals, env));

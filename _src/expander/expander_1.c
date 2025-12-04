@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:12 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:42:38 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:11:47 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,16 @@ char	*exp_get_var_value(const char *src, int *i, t_map_str_str *env,
 	char	*var_name;
 	char	*value;
 
-	(*i)++; // Skip the '$'
-	// Check if there's anything after $
+	(*i)++;
 	if (!src[*i])
-		return (NULL); // Just a $ at end
+		return (NULL);
 	var_len = get_var_name_size(&src[*i]);
 	if (var_len == 0)
-		return (NULL); // No valid variable name (like "$ " or "$@")
+		return (NULL);
 	var_name = ft_substr(src, *i, var_len);
 	if (!var_name)
 		return (NULL);
-	*i += var_len; // Move past the variable name
+	*i += var_len;
 	value = get_var_value(var_name, env, exit_status);
 	free(var_name);
 	return (value);

@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 10:29:59 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:48:03 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:59:37 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static int	is_numeric_argument(const char *s)
 	i = 0;
 	if (!s)
 		return (0);
-	// optional + or -
 	if (s[i] == '+' || s[i] == '-')
 		i++;
 	if (!ft_isdigit(s[i]))
@@ -63,27 +62,22 @@ int	builtin_exit(t_ast_node *node, t_map_str_str **env, int *exit_status)
 {
 	long long	code;
 
-	(void)env; // unused, but keep prototype consistent
+	(void)env; 
 	printf("exit\n");
-	// no arguments: exit with previous status
 	if (node->arg_count == 1)
 		exit(*exit_status);
-	// first argument is NOT numeric
 	if (!is_numeric_argument(node->args[1]))
 	{
 		fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
 			node->args[1]);
 		exit(2);
 	}
-	// too many arguments
 	if (node->arg_count > 2)
 	{
 		fprintf(stderr, "minishell: exit: too many arguments\n");
-		return (1); // DO NOT EXIT
+		return (1);
 	}
-	// convert safely
 	code = ft_atoll(node->args[1]);
-	// wrap around the exit code
 	code = (unsigned char)code;
 	exit(code);
 }

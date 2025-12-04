@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:48:21 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:15:10 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 
 // Parse commands,
 // Need to handle things
-//
 
 static char	*strip_quotes(const char *str)
 {
@@ -82,27 +81,25 @@ t_ast_node	*parse_simple_command(t_token **current)
 	cmd_node = create_ast_node(NODE_COMMAND);
 	if (!cmd_node)
 		return (NULL);
-	root = cmd_node; // Keep track of the tree root (changes with redirections)
+	root = cmd_node;
 	token = *current;
 	while (token && token->type != TOKEN_TYPE_PIPE)
 	{
 		if (token->type == TOKEN_TYPE_WORD)
 		{
-			// ALWAYS add arguments to cmd_node (the original command node)
 			add_arg_to_node(cmd_node, token->value);
 			token = token->next;
 		}
 		else if (token->type >= TOKEN_TYPE_REDIRECT_IN
 			&& token->type <= TOKEN_TYPE_HEREDOC)
 		{
-			// Create redirection node
 			redirect_node = create_ast_node(token_type_to_node_type(token->type));
 			if (!redirect_node)
 			{
 				free_ast(root);
 				return (NULL);
 			}
-			token = token->next; // Move to filename
+			token = token->next;
 			if (!token || token->type != TOKEN_TYPE_WORD)
 			{
 				ft_putendl_fd(UNEXPECTED_TK_NEW_LINE, 2);
@@ -111,22 +108,19 @@ t_ast_node	*parse_simple_command(t_token **current)
 				*current = token;
 				return (NULL);
 			}
-			// Store filename (remove quotes if needed)
 			if (redirect_node->type == NODE_HEREDOC)
 				redirect_node->heredoc_delimiter = ft_strdup(token->value);
 			else
 				redirect_node->filename = ft_strdup(token->value);
-			// Link: redirection wraps current root
 			redirect_node->left = root;
-			root = redirect_node; // Update root
-			token = token->next;  // Move past filename
-									// IMPORTANT: Continue the loop to collect more args!
+			root = redirect_node;
+			token = token->next;
 		}
 		else
 			break ;
 	}
 	*current = token;
-	return (root); // Return root (might be redirection or command)
+	return (root);
 }
 
 t_ast_node	*parse_pipeline(t_token *tokens)

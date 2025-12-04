@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execution_2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 09:55:32 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/28 09:56:58 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:05:28 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execution.h>
 #include <stdlib.h>
 
-// Filter out empty strings from args array after expansion
 int	filter_empty_args(char **args)
 {
 	int	i;
@@ -25,7 +24,7 @@ int	filter_empty_args(char **args)
 	j = 0;
 	while (args[i])
 	{
-		if (args[i][0] != '\0') // Keep non-empty strings
+		if (args[i][0] != '\0')
 		{
 			if (i != j)
 				args[j] = args[i];
@@ -33,10 +32,10 @@ int	filter_empty_args(char **args)
 		}
 		else
 		{
-			free(args[i]); // Free the empty string
+			free(args[i]);
 		}
 		i++;
 	}
 	args[j] = NULL;
-	return (j); // Return new arg count
+	return (j);
 }
