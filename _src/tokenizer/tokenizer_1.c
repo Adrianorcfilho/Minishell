@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:15 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 21:00:36 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:41:38 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,55 +16,46 @@
 #include <tokenizer.h>
 #include <unistd.h>
 
-int handle_word(char *input, t_token **tokens)
+int	handle_word(char *input, t_token **tokens)
 {
-    int     i;
-    char    *word;
-    char    in_quote;
-    int     k;
+	int		i;
+	char	*word;
+	char	in_quote;
+	int		k;
 
-    
-    i = 0;
-    in_quote = 0;
-    
-    while (input[i])
-    {
-        if (input[i] == '\'' && (in_quote == 0 || in_quote == '\''))
-        {
-            if (in_quote == '\'')
-                in_quote = 0;
-            else
-                in_quote = '\'';
-            i++;
-            continue;
-        }
-        else if (input[i] == '"' && (in_quote == 0 || in_quote == '"'))
-        {
-            if (in_quote == '"')
-                in_quote = 0;
-            else
-                in_quote = '"';
-            i++;
-            continue;
-        }
-        
-        if (in_quote == 0 && ft_strchr(" |><", input[i]))
-            break;
-        i++;
-    }
-    
-
-    
-    word = ft_strndup(input, i);
-    
-    // Debug: Show result
-    if (word)
-    {
-        link_tokens(tokens, create_token(TOKEN_TYPE_WORD, word));
-        free(word);
-    }
-
-    return (i);
+	i = 0;
+	in_quote = 0;
+	while (input[i])
+	{
+		if (input[i] == '\'' && (in_quote == 0 || in_quote == '\''))
+		{
+			if (in_quote == '\'')
+				in_quote = 0;
+			else
+				in_quote = '\'';
+			i++;
+			continue ;
+		}
+		else if (input[i] == '"' && (in_quote == 0 || in_quote == '"'))
+		{
+			if (in_quote == '"')
+				in_quote = 0;
+			else
+				in_quote = '"';
+			i++;
+			continue ;
+		}
+		if (in_quote == 0 && ft_strchr(" |><", input[i]))
+			break ;
+		i++;
+	}
+	word = ft_strndup(input, i);
+	if (word)
+	{
+		link_tokens(tokens, create_token(TOKEN_TYPE_WORD, word));
+		free(word);
+	}
+	return (i);
 }
 
 t_token	*tokenize(char *prompt)

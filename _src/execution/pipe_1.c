@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:49:18 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 21:28:53 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:44:42 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,89 +22,84 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void    setup_pipe_fds(int *fd, int *output_fd, int i, int count)
+void	setup_pipe_fds(int *fd, int *output_fd, int i, int count)
 {
-    if (i < count - 1)
-    {
-        pipe(fd);
-        *output_fd = fd[1];
-    }
-    else
-        *output_fd = STDOUT_FILENO;
+	if (i < count - 1)
+	{
+		pipe(fd);
+		*output_fd = fd[1];
+	}
+	else
+		*output_fd = STDOUT_FILENO;
 }
 
-int execute_commands_loop(t_pipeline *pipeline, pid_t *pids)
+int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids)
 {
-    int         i;
-    int         fd[2];
-    int         input_fd;
-    int         output_fd;
-    t_cmd_exec  cmd_data;
+	int			i;
+	int			fd[2];
+	int			input_fd;
+	int			output_fd;
+	t_cmd_exec	cmd_data;
 
-    input_fd = STDIN_FILENO;
-    i = 0;
-    while (i < pipeline->count)
-    {
-        // Create pipe for this command (if not last)
-        if (i < pipeline->count - 1)
-        {
-            if (pipe(fd) == -1)
-                return (-1);
-            output_fd = fd[1];
-        }
-        else
-            output_fd = STDOUT_FILENO;
-        
-        cmd_data = (t_cmd_exec){pipeline->cmds[i], pipeline->env,
-                                pipeline->status, input_fd, output_fd};
-        pids[i] = exec_command_in_pipeline(&cmd_data);
-        
-        // ✅ CRITICAL: Parent closes ALL FDs immediately after fork
-        if (output_fd != STDOUT_FILENO)
-            close(output_fd);  // Close write end (child has it)
-        
-        if (input_fd != STDIN_FILENO)
-            close(input_fd);   // Close read end from previous pipe
-        
-        // Save read end for next command's input
-        if (i < pipeline->count - 1)
-            input_fd = fd[0];
-        
-        i++;
-    }
-    return (0);
+	input_fd = STDIN_FILENO;
+	i = 0;
+	while (i < pipeline->count)
+	{
+		// Create pipe for this command (if not last)
+		if (i < pipeline->count - 1)
+		{
+			if (pipe(fd) == -1)
+				return (-1);
+			output_fd = fd[1];
+		}
+		else
+			output_fd = STDOUT_FILENO;
+		cmd_data = (t_cmd_exec){pipeline->cmds[i], pipeline->env,
+			pipeline->status, input_fd, output_fd};
+		pids[i] = exec_command_in_pipeline(&cmd_data);
+		// ✅ CRITICAL: Parent closes ALL FDs immediately after fork
+		if (output_fd != STDOUT_FILENO)
+			close(output_fd); // Close write end (child has it)
+		if (input_fd != STDIN_FILENO)
+			close(input_fd); // Close read end from previous pipe
+		// Save read end for next command's input
+		if (i < pipeline->count - 1)
+			input_fd = fd[0];
+		i++;
+	}
+	return (0);
 }
 
-int exec_pipeline_commands(t_pipeline *pipeline)
+int	exec_pipeline_commands(t_pipeline *pipeline)
 {
-    pid_t   *pids;
-    int     result;
+	pid_t	*pids;
+	int		result;
 
-    pids = malloc(sizeof(pid_t) * pipeline->count);
-    if (!pids)
-        return (-1);
-    execute_commands_loop(pipeline, pids);
-    result = wait_all_processes(pids, pipeline->count);
-    free(pids);
-    return (result);
+	pids = malloc(sizeof(pid_t) * pipeline->count);
+	if (!pids)
+		return (-1);
+	execute_commands_loop(pipeline, pids);
+	result = wait_all_processes(pids, pipeline->count);
+	free(pids);
+	return (result);
 }
 
-int exec_pipe(t_ast_node *node, t_map_str_str **env, int *status)
+int	exec_pipe(t_ast_node *node, t_map_str_str **env, int *status)
 {
-    t_ast_node  **cmds;
-    int         count;
-    int         idx;
-    int         result;
-    t_pipeline  pipeline;
+	t_ast_node **cmds;
+	int count;
+	int idx;
+	int result;
+	t_pipeline pipeline;
 
-    count = count_pipeline(node);
-    cmds = malloc(sizeof(t_ast_node *) * count);
-    if (!cmds)
-        return (-1);
-    idx = 0;
-    collect_commands(node, cmds, &idx);
-    pipeline = (t_pipeline){cmds, count, env, status};
-    result = exec_pipeline_commands(&pipeline);
-    free(cmds);
-    return (result);
+	count = count_pipeline(node);
+	cmds = malloc(sizeof(t_ast_node *) * count);
+	if (!cmds)
+		return (-1);
+	idx = 0;
+	collect_commands(node, cmds, &idx);
+	pipeline = (t_pipeline){cmds, count, env, status};
+	result = exec_pipeline_commands(&pipeline);
+	free(cmds);
+	return (result);
 }

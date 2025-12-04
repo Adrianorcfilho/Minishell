@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_0.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/28 15:09:42 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:46:10 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int	exec_command(t_ast_node *node, t_map_str_str **env, int *last_exit)
 	pid_t		pid;
 	int			status;
 	struct stat	st;
+	char		*cmd_path;
+	char		**env_array;
 
 	if (!node || node->type != NODE_COMMAND)
 		return (1);
@@ -81,7 +83,12 @@ int	exec_command(t_ast_node *node, t_map_str_str **env, int *last_exit)
 				exit(126);
 			}
 		}
-		execvp(node->args[0], node->args);
+		cmd_path = find_cmd_path(*env, node->args[0]);
+		if (cmd_path == NULL)
+			cmd_path = node->args[0];
+		env_array = map_as_c_array(*env);
+		execve(cmd_path, node->args, env_array);
+		// execvp(node->args[0], node->args);
 		if (errno == ENOENT)
 		{
 			fprintf(stderr, "%s: command not found\n", node->args[0]);

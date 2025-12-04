@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:36 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/03 00:29:39 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:50:42 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,80 +101,37 @@ static int	process_input(char *prompt, t_map_str_str **map_env,
 	return (last_status);
 }
 
-static char	*build_fullpath(char *path, const char *cmd)
-{
-	char *abs;
-
-	if (!path || !cmd)
-		return (NULL);
-	abs = ft_strjoin(path, "/");
-	abs = ft_strjoin(abs, cmd);
-	return (abs);
-}
-
-void	new_exec(t_map_str_str *map, char **prog)
-{
-	char	*path;
-	char	*candidate;
-	char	**paths;
-	char	**hold;
-
-	path = map_get(map, "PATH");
-	paths = ft_split(path, ':');
-	hold = paths;
-	while (*paths)
-	{
-		candidate = build_fullpath(*paths, prog[0]);
-		if (!candidate)
-		{
-			
-			break ;
-		}
-		printf("%s\n", candidate);
-		//(*paths) = (*paths) + 1;
-		paths = paths + 1;
-	}
-	ft_free(hold);
-}
-
 int	main(int argc, char **argv, char **env)
 {
 	char			*prompt;
 	t_map_str_str	*map_env;
 	int				last_status;
-	char			ls_path[] = "/bin/ls";
-	char			*prog_ls[] = {"ls", NULL};
 
 	last_status = 0;
 	map_env = env_init(env);
-	new_exec(map_env, prog_ls);
-	// execvp(prog_ls[0], prog_ls);
-	//execve(ls_path, &prog_ls[1], env);
+	setup_signals();
+	while (1)
+	{
+		prompt = readline("🐚 ➤ ");
+		if (!prompt)
+			break ;
+		if (*prompt == '\0')
+		{
+			free(prompt);
+			continue ;
+		}
+		if (g_signal_received == SIGINT)
+		{
+			last_status = 130;
+			g_signal_received = 0;
+		}
+		last_status = process_input(prompt, &map_env, last_status);
+		free(prompt);
+	}
+	free_map(map_env);
+	rl_clear_history();
+	return (last_status);
 }
-
-// 	setup_signals();
-// 	while (1)
-// 	{
-// 		prompt = readline("🐚 ➤ ");
-// 		if (!prompt)
-// 			break ;
-// 		if (*prompt == '\0')
-// 		{
-// 			free(prompt);
-// 			continue ;
-// 		}
-// 		if (g_signal_received == SIGINT)
-// 		{
-// 			last_status = 130;
-// 			g_signal_received = 0;
-// 		}
-// 		last_status = process_input(prompt, &map_env, last_status);
-// 		free(prompt);
-// 	}
-// 	free_map(map_env);
-// 	rl_clear_history();
-// 	return (last_status);
-// }
 
 /*
 

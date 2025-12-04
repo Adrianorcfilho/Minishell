@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_syntax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 08:21:40 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 12:10:57 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:48:28 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,24 @@
 #include <minilibft.h>
 
 // ✅ CORRECT
-int validate_syntax(t_ast_node *node)
+int	validate_syntax(t_ast_node *node)
 {
-    if (!node)
-        return (0);
-    
-    if (node->type == NODE_REDIRECT_IN || node->type == NODE_REDIRECT_OUT)
-    {
-        // For redirections, the FILENAME is stored in the node itself
-        // The LEFT child contains the command
-        if (!node->filename || !node->left)
-        {
-            ft_putendl_fd("syntax error near unexpected token `newline'", 2);
-            return (1);
-        }
-    }
-    
-    // Recursively validate children
-    if (validate_syntax(node->left))
-        return (1);
-    if (validate_syntax(node->right))
-        return (1);
-    
-    return (0);
+	if (!node)
+		return (0);
+	if (node->type == NODE_REDIRECT_IN || node->type == NODE_REDIRECT_OUT)
+	{
+		// For redirections, the FILENAME is stored in the node itself
+		// The LEFT child contains the command
+		if (!node->filename || !node->left)
+		{
+			ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+			return (1);
+		}
+	}
+	// Recursively validate children
+	if (validate_syntax(node->left))
+		return (1);
+	if (validate_syntax(node->right))
+		return (1);
+	return (0);
 }

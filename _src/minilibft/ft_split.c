@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 18:21:33 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/03 00:26:14 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:40:53 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*new_string(const char *s, char c)
 	return (new);
 }
 
- void	ft_free(char **res)
+void	ft_free(char **res)
 {
 	int	i;
 

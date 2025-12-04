@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 10:55:53 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:41:58 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,23 +81,23 @@ int	map_unset(t_map_str_str **env, const char *key)
 	return (-1);
 }
 
-static t_map_str_str    *parse_and_create_node(char *env_line)
+static t_map_str_str	*parse_and_create_node(char *env_line)
 {
-    char            *equals;
-    char            *key;
-    char            *value;
-    t_map_str_str   *new;
+	char			*equals;
+	char			*key;
+	char			*value;
+	t_map_str_str	*new;
 
-    equals = ft_strchr(env_line, '=');
-    if (!equals)
-        return (NULL);
-    key = ft_strndup(env_line, equals - env_line);
-    if (!key)
-        return (NULL);
-    value = equals + 1;
-    new = map_insert(key, value);
-    free(key);
-    return (new);
+	equals = ft_strchr(env_line, '=');
+	if (!equals)
+		return (NULL);
+	key = ft_strndup(env_line, equals - env_line);
+	if (!key)
+		return (NULL);
+	value = equals + 1;
+	new = map_insert(key, value);
+	free(key);
+	return (new);
 }
 
 t_map_str_str	*env_init(char **env)

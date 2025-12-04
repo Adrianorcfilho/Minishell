@@ -34,6 +34,7 @@ SRC 	+= _src/execution/exit_status.c
 SRC		+= _src/execution/execution_0.c
 SRC		+= _src/execution/execution_1.c
 SRC		+= _src/execution/execution_2.c
+SRC		+= _src/execution/find_path.c
 SRC		+= _src/execution/pipe_0.c
 SRC		+= _src/execution/pipe_1.c
 SRC		+= _src/execution/heredoc_0.c

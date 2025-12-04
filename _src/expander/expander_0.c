@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expander_0.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:12 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 17:46:01 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:42:35 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <map.h>
 #include <minilibft.h>
 #include <stdlib.h>
-
-/* For debbguing */
 #include <unistd.h>
 
 int	is_valid_var_char(char c)
