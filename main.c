@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:36 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:50:42 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/05 00:04:37 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,31 +106,34 @@ int	main(int argc, char **argv, char **env)
 	char			*prompt;
 	t_map_str_str	*map_env;
 	int				last_status;
-
+	
 	last_status = 0;
 	map_env = env_init(env);
-	setup_signals();
-	while (1)
-	{
-		prompt = readline("🐚 ➤ ");
-		if (!prompt)
-			break ;
-		if (*prompt == '\0')
-		{
-			free(prompt);
-			continue ;
-		}
-		if (g_signal_received == SIGINT)
-		{
-			last_status = 130;
-			g_signal_received = 0;
-		}
-		last_status = process_input(prompt, &map_env, last_status);
-		free(prompt);
-	}
+	
+	char **mapapapapap = map_as_c_array(map_env);
+	ft_free(mapapapapap); 
+	// setup_signals();
+	// while (1)
+	// {
+	// 	prompt = readline("🐚 ➤ ");
+	// 	if (!prompt)
+	// 		break ;
+	// 	if (*prompt == '\0')
+	// 	{
+	// 		free(prompt);
+	// 		continue ;
+	// 	}
+	// 	if (g_signal_received == SIGINT)
+	// 	{
+	// 		last_status = 130;
+	// 		g_signal_received = 0;
+	// 	}
+	// 	last_status = process_input(prompt, &map_env, last_status);
+	// 	free(prompt);
+	// }
 	free_map(map_env);
-	rl_clear_history();
-	return (last_status);
+	// rl_clear_history();
+	// return (last_status);
 }
 
 /*

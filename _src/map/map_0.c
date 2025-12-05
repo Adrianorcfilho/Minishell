@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:42:01 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/05 00:02:15 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,9 @@ char	**map_as_c_array(t_map_str_str *env)
 	count = 0;
 	while (current)
 	{
-		arr_line_size = ft_strlen(current->key) + 1 + ft_strlen(current->value)
-			+ 1;
-		map_array[count] = malloc(sizeof(char *) * arr_line_size);
+		// arr_line_size = ft_strlen(current->key) + 1 + ft_strlen(current->value)
+		// 	+ 1;
+		map_array[count] = malloc(sizeof(char *) * 500);
 		map_array[count] = ft_strjoin(map_array[count], current->key);
 		map_array[count] = ft_strjoin(map_array[count], "=");
 		map_array[count] = ft_strjoin(map_array[count], current->value);

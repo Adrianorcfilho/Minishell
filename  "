@@ -1,5 +1,0 @@
-EXEC_COMMAND DEBUG: arg_count=3
-EXEC_COMMAND DEBUG: args[0]='echo' (len=4)
-EXEC_COMMAND DEBUG: args[1]='aspas' (len=5)
-EXEC_COMMAND DEBUG: args[2]='-' (len=1)
-aspas -
