@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:15 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 21:00:36 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 22:41:38 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ int	handle_word(char *input, t_token **tokens)
 		i++;
 	}
 	word = ft_strndup(input, i);
-	// Debug: Show result
 	if (word)
 	{
 		link_tokens(tokens, create_token(TOKEN_TYPE_WORD, word));

@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include <sys/types.h>
 #include <unistd.h>
+#include <sys/types.h>
 
 pid_t	safe_fork(void)
 {

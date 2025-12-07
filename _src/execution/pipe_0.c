@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_0.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:12:45 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/28 15:04:04 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/04 23:13:30 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int	wait_all_processes(pid_t *pids, int count)
 	int		i;
 	int		exit_status;
 	int		last_status;
-		int status;
+	int		status;
 	pid_t	finished;
 
 	last_status = 0;
