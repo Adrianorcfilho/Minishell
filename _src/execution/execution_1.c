@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:37:07 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/11/28 11:00:16 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,36 +70,6 @@ static int	setup_output_redirect(t_ast_node *node)
 		return (-1);
 	return (fd);
 }
-void	exe_redir_types(t_ast_node  *redirs[1024], int i, int *error, int *fds)
-{
-	if (redirs[i]->type == NODE_REDIRECT_IN)
-	{
-		fds[i] = open(redirs[i]->filename, O_RDONLY);
-		if (fds[i] == -1)
-		{
-			perror(redirs[i]->filename);
-			*error = 1;
-		}
-	}
-	else if (redirs[i]->type == NODE_REDIRECT_OUT)
-	{
-		fds[i] = open(redirs[i]->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fds[i] == -1)
-		{
-			perror(redirs[i]->filename);
-			*error = 1;
-		}
-	}
-	else
-	{
-		fds[i] = open(redirs[i]->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fds[i] == -1)
-		{
-			perror(redirs[i]->filename);
-			*error = 1;
-		}
-	}
-}
 
 int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
 {
@@ -133,7 +103,35 @@ int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
 		i = count - 1;
 		while (i >= 0 && !error)
 		{
-			exe_redir_types(redirs, i, &error, fds);
+			if (redirs[i]->type == NODE_REDIRECT_IN)
+			{
+				fds[i] = open(redirs[i]->filename, O_RDONLY);
+				if (fds[i] == -1)
+				{
+					perror(redirs[i]->filename);
+					error = 1;
+				}
+			}
+			else if (redirs[i]->type == NODE_REDIRECT_OUT)
+			{
+				fds[i] = open(redirs[i]->filename, O_WRONLY | O_CREAT | O_TRUNC,
+						0644);
+				if (fds[i] == -1)
+				{
+					perror(redirs[i]->filename);
+					error = 1;
+				}
+			}
+			else
+			{
+				fds[i] = open(redirs[i]->filename,
+						O_WRONLY | O_CREAT | O_APPEND, 0644);
+				if (fds[i] == -1)
+				{
+					perror(redirs[i]->filename);
+					error = 1;
+				}
+			}
 			i--;
 		}
 		if (error)

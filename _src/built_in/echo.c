@@ -3,25 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:58:22 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:03:19 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/11/28 12:02:40 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-// NOTE: This structure is assumed based on common shell implementations.
-// You may need to adjust based on your actual t_ast_node definition.
-/*
-typedef struct s_ast_node
-{
-	// ... other members
-	t_list_str *args; // A linked list of strings (the arguments)
-	// ... other members
-}	t_ast_node;
-*/
-
-// A basic structure for a linked list of strings (arguments)
 
 #include <AST.h>
 #include <map.h>
@@ -43,7 +30,7 @@ int	builtin_echo(t_ast_node *node, t_map_str_str *env)
 		i = 1;
 	}
 	else
-        i = 0;
+		i = 0;
 	while (i < node->arg_count)
 	{
 		printf("%s", node->args[i]);

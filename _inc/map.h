@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:49 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:42:50 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/11/27 01:07:09 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int							map_set(t_map_str_str **env, const char *key,
 								const char *value);
 void						map_print(t_map_str_str *env);
 void						free_map(t_map_str_str *env);
-char						**map_as_c_array(t_map_str_str *env);
 t_map_str_str				*map_insert(const char *key, const char *value);
 
 #endif

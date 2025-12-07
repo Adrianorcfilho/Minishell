@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/05 00:02:15 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/11/27 01:14:45 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,38 +84,4 @@ void	map_print(t_map_str_str *env)
 		printf("key: %s value: %s\n", current->key, current->value);
 		current = current->next;
 	}
-}
-
-char	**map_as_c_array(t_map_str_str *env)
-{
-	char			**map_array;
-	t_map_str_str	*current;
-	int				count;
-	int				arr_line_size;
-
-	current = env;
-	count = 0;
-	while (current)
-	{
-		count++;
-		current = current->next;
-	}
-	map_array = malloc(sizeof(char **) * count + 1);
-	if (!map_array)
-		return (NULL);
-	current = env;
-	count = 0;
-	while (current)
-	{
-		// arr_line_size = ft_strlen(current->key) + 1 + ft_strlen(current->value)
-		// 	+ 1;
-		map_array[count] = malloc(sizeof(char *) * 500);
-		map_array[count] = ft_strjoin(map_array[count], current->key);
-		map_array[count] = ft_strjoin(map_array[count], "=");
-		map_array[count] = ft_strjoin(map_array[count], current->value);
-		current = current->next;
-		count++;
-	}
-	map_array[count] = NULL;
-	return (map_array);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minilibft.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:55 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/03 00:11:42 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/11/27 14:03:30 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,5 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 int		ft_atoi(const char *str);
 int		ft_isdigit(int c);
 int		ft_isalpha(int c);
-char	**ft_split(char const *s, char c);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
-void	ft_free(char **res);
-char	*ft_strjoin(char const *s1, char const *s2);
 
 #endif

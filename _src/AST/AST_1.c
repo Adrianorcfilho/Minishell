@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AST_1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:15:10 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/11/27 16:14:07 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tokenizer.h>
-
-// Parse commands,
-// Need to handle things
 
 static char	*strip_quotes(const char *str)
 {

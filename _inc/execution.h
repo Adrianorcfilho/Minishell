@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:42 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 20:09:01 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/11/28 12:03:42 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ int						exec_pipe(t_ast_node *node, t_map_str_str **env,
 							int *status);
 char					*get_heredoc_content(char *delimiter);
 int						filter_empty_args(char **args);
-char					*find_cmd_path(t_map_str_str *map, char *prog);
 
 // BUILT INS
 int						run_builtin(t_ast_node *node, t_map_str_str **env,
