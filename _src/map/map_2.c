@@ -1,35 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   teste_map_as_c_array.c                             :+:      :+:    :+:   */
+/*   map_2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/07 21:19:31 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/07 21:19:36 by adrocha-         ###   ########.fr       */
+/*   Created: 2025/12/07 23:35:33 by adrocha-          #+#    #+#             */
+/*   Updated: 2025/12/07 23:36:05 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <AST.h>
-#include <execution.h>
-#include <expander.h>
 #include <map.h>
 #include <minilibft.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <signal.h>
-#include <signals.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <tokenizer.h>
+#include <unistd.h>
 
-int	main(int argc, char **argv, char **env)
+int	map_unset(t_map_str_str **env, const char *key)
 {
-	t_map_str_str	*map_env;
-	char			**arr;
+	t_map_str_str	*curr;
+	t_map_str_str	*prev;
 
-	map_env = env_init(env);
-	arr = map_as_c_array(map_env);
-	ft_free(arr);
-	free_map(map_env);
-	return (0);
+	prev = NULL;
+	if (!env || !*env || !key)
+		return (-1);
+	curr = *env;
+	while (curr)
+	{
+		if (ft_strcmp(curr->key, key) == 0)
+		{
+			if (prev)
+				prev->next = curr->next;
+			else
+				*env = curr->next;
+			free(curr->key);
+			free(curr->value);
+			free(curr);
+			return (0);
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+	return (-1);
 }

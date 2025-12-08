@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/05 00:02:15 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 23:14:33 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,22 +43,6 @@ t_map_str_str	*map_insert(const char *key, const char *value)
 	return (new);
 }
 
-void	free_map(t_map_str_str *env)
-{
-	t_map_str_str	*current;
-	t_map_str_str	*next;
-
-	current = env;
-	while (current)
-	{
-		next = current->next;
-		free(current->key);
-		free(current->value);
-		free(current);
-		current = next;
-	}
-}
-
 char	*map_get(t_map_str_str *head, const char *key)
 {
 	t_map_str_str	*current;
@@ -87,12 +71,29 @@ void	map_print(t_map_str_str *env)
 	}
 }
 
+void	map_arr_creat_env_string(char **map_array, int *count,
+		t_map_str_str *current)
+{
+	int	arr_line_size;
+
+	while (current)
+	{
+		arr_line_size = ft_strlen(current->key) + 1 + ft_strlen(current->value)
+			+ 1;
+		map_array[*count] = calloc(sizeof(char), arr_line_size);
+		strcat(map_array[*count], current->key);
+		strcat(map_array[*count], "=");
+		strcat(map_array[*count], current->value);
+		current = current->next;
+		(*count)++;
+	}
+}
+
 char	**map_as_c_array(t_map_str_str *env)
 {
 	char			**map_array;
 	t_map_str_str	*current;
 	int				count;
-	int				arr_line_size;
 
 	current = env;
 	count = 0;
@@ -106,16 +107,7 @@ char	**map_as_c_array(t_map_str_str *env)
 		return (NULL);
 	current = env;
 	count = 0;
-	while (current)
-	{
-		arr_line_size = ft_strlen(current->key) + 1 + ft_strlen(current->value) + 1;
-		map_array[count] = calloc(sizeof(char), arr_line_size);
-		strcat(map_array[count], current->key);
-		strcat(map_array[count], "=");
-		strcat(map_array[count], current->value);
-		current = current->next;
-		count++;
-	}
+	map_arr_creat_env_string(map_array, &count, current);
 	map_array[count] = NULL;
 	return (map_array);
 }

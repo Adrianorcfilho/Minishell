@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:37:07 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 22:21:39 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,6 @@ static int	setup_input_redirect(t_ast_node *node)
 	return (fd);
 }
 
-int	exec_redirect_in(t_ast_node *node, t_map_str_str **env, int *status)
-{
-	return (exec_redirect(node, env, status));
-}
-
 static int	setup_output_redirect(t_ast_node *node)
 {
 	int	fd;
@@ -70,96 +65,77 @@ static int	setup_output_redirect(t_ast_node *node)
 		return (-1);
 	return (fd);
 }
-void	exe_redir_types(t_ast_node  *redirs[1024], int i, int *error, int *fds)
+
+void	create_dup2_error(t_ast_node *redirs[1024], int fds[1024], int count,
+		int *i)
 {
-	if (redirs[i]->type == NODE_REDIRECT_IN)
+	int	error;
+
+	error = 0;
+	while (*i >= 0 && !error)
 	{
-		fds[i] = open(redirs[i]->filename, O_RDONLY);
-		if (fds[i] == -1)
-		{
-			perror(redirs[i]->filename);
-			*error = 1;
-		}
+		exe_redir_types(redirs, *i, &error, fds);
+		(*i)--;
 	}
-	else if (redirs[i]->type == NODE_REDIRECT_OUT)
+	if (error)
 	{
-		fds[i] = open(redirs[i]->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fds[i] == -1)
+		*i = 0;
+		while (*i < count)
 		{
-			perror(redirs[i]->filename);
-			*error = 1;
+			if (fds[*i] != -1)
+				close(fds[*i]);
+			(*i)++;
 		}
+		exit(1);
 	}
-	else
+}
+
+void	create_dup2(t_create_dup2_var_list d_list, t_map_str_str **env,
+		int count, int *status)
+{
+	int	result;
+	int	i;
+
+	i = count - 1;
+	create_dup2_error(d_list.redirs, d_list.fds, count, &i);
+	i = count - 1;
+	while (i >= 0)
 	{
-		fds[i] = open(redirs[i]->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fds[i] == -1)
-		{
-			perror(redirs[i]->filename);
-			*error = 1;
-		}
+		if (d_list.redirs[i]->type == NODE_REDIRECT_IN)
+			dup2(d_list.fds[i], STDIN_FILENO);
+		else
+			dup2(d_list.fds[i], STDOUT_FILENO);
+		close(d_list.fds[i]);
+		i--;
 	}
+	result = exec_node(d_list.curr, env, status);
+	exit(result);
 }
 
 int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
 {
-	t_ast_node	*redirs[1024];
-	int			fds[1024];
-	int			count;
-	int			result;
-	pid_t		pid;
-	int			wstatus;
-	t_ast_node	*curr;
-	int			i;
-	int			error;
+	t_ast_node				*redirs[1024];
+	int						fds[1024];
+	t_exe_redir_var_list	v_list;
+	t_ast_node				*curr;
 
-	count = 0;
+	v_list.count = 0;
 	curr = node;
 	while (curr && (curr->type == NODE_REDIRECT_IN
 			|| curr->type == NODE_REDIRECT_OUT
 			|| curr->type == NODE_REDIRECT_APPEND))
 	{
-		redirs[count] = curr;
-		fds[count] = -1;
-		count++;
+		redirs[v_list.count] = curr;
+		fds[v_list.count] = -1;
+		v_list.count++;
 		curr = curr->left;
 	}
-	pid = safe_fork();
-	if (pid == -1)
+	v_list.pid = safe_fork();
+	if (v_list.pid == -1)
 		return (1);
-	if (pid == 0)
-	{
-		error = 0;
-		i = count - 1;
-		while (i >= 0 && !error)
-		{
-			exe_redir_types(redirs, i, &error, fds);
-			i--;
-		}
-		if (error)
-		{
-			i = 0;
-			while (i < count)
-			{
-				if (fds[i] != -1)
-					close(fds[i]);
-				i++;
-			}
-			exit(1);
-		}
-		i = count - 1;
-		while (i >= 0)
-		{
-			if (redirs[i]->type == NODE_REDIRECT_IN)
-				dup2(fds[i], STDIN_FILENO);
-			else
-				dup2(fds[i], STDOUT_FILENO);
-			close(fds[i]);
-			i--;
-		}
-		result = exec_node(curr, env, status);
-		exit(result);
-	}
-	waitpid(pid, &wstatus, 0);
-	return (get_exit_status(wstatus));
+	if (v_list.pid == 0)
+		create_dup2((t_create_dup2_var_list){redirs, fds, curr}, env,
+			v_list.count, status);
+	waitpid(v_list.pid, &v_list.wstatus, 0);
+	return (get_exit_status(v_list.wstatus));
 }

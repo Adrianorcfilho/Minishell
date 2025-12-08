@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:58:22 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:03:19 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 23:49:44 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	builtin_echo(t_ast_node *node, t_map_str_str *env)
 		i = 1;
 	}
 	else
-        i = 0;
+		i = 0;
 	while (i < node->arg_count)
 	{
 		printf("%s", node->args[i]);

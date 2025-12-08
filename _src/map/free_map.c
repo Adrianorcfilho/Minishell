@@ -1,35 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   teste_map_as_c_array.c                             :+:      :+:    :+:   */
+/*   free_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/07 21:19:31 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/07 21:19:36 by adrocha-         ###   ########.fr       */
+/*   Created: 2025/12/07 23:14:25 by adrocha-          #+#    #+#             */
+/*   Updated: 2025/12/07 23:16:51 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <AST.h>
-#include <execution.h>
-#include <expander.h>
 #include <map.h>
-#include <minilibft.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <signal.h>
-#include <signals.h>
 #include <stdlib.h>
-#include <tokenizer.h>
 
-int	main(int argc, char **argv, char **env)
+void	free_map(t_map_str_str *env)
 {
-	t_map_str_str	*map_env;
-	char			**arr;
+	t_map_str_str	*current;
+	t_map_str_str	*next;
 
-	map_env = env_init(env);
-	arr = map_as_c_array(map_env);
-	ft_free(arr);
-	free_map(map_env);
-	return (0);
+	current = env;
+	while (current)
+	{
+		next = current->next;
+		free(current->key);
+		free(current->value);
+		free(current);
+		current = next;
+	}
 }

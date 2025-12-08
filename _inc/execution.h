@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:42 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 20:09:01 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 22:36:26 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,26 @@ typedef struct s_list_str
 	struct s_list_str	*next;
 }						t_list_str;
 
+typedef struct s_exe_redir_var_list
+{
+	int					count;
+	pid_t				pid;
+	int					wstatus;
+}						t_exe_redir_var_list;
+
+typedef struct s_create_dup2_var_list
+{
+	t_ast_node			**redirs;
+	int					*fds;
+	t_ast_node			*curr;
+}						t_create_dup2_var_list;
+
+typedef struct s_io_fd
+{
+	int					input_fd;
+	int					output_fd;
+}						t_io_fd;
+
 int						exec_ast(t_ast_node *node, t_map_str_str **env,
 							int *status);
 
@@ -88,6 +108,8 @@ int						exec_pipe(t_ast_node *node, t_map_str_str **env,
 char					*get_heredoc_content(char *delimiter);
 int						filter_empty_args(char **args);
 char					*find_cmd_path(t_map_str_str *map, char *prog);
+void					exe_redir_types(t_ast_node *redirs[1024], int i,
+							int *error, int *fds);
 
 // BUILT INS
 int						run_builtin(t_ast_node *node, t_map_str_str **env,

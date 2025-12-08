@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:03:54 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 21:29:52 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,68 @@ int	run_builtin(t_ast_node *node, t_map_str_str **env, int *exit_stauts)
 	return (1);
 }
 
+void	check_not_exec(t_ast_node *node)
+{
+	struct stat	st;
+
+	if (ft_strchr(node->args[0], '/') != NULL)
+	{
+		if (stat(node->args[0], &st) == 0 && S_ISDIR(st.st_mode))
+		{
+			fprintf(stderr, "%s: is a directory\n", node->args[0]);
+			exit(126);
+		}
+		if (access(node->args[0], F_OK) != 0)
+		{
+			perror(node->args[0]);
+			exit(127);
+		}
+		if (access(node->args[0], X_OK) != 0)
+		{
+			perror(node->args[0]);
+			exit(126);
+		}
+	}
+}
+
+void	check_is_error(t_ast_node *node)
+{
+	if (errno == ENOENT)
+	{
+		fprintf(stderr, "%s: command not found\n", node->args[0]);
+		exit(127);
+	}
+	else if (errno == EACCES)
+	{
+		perror(node->args[0]);
+		exit(126);
+	}
+	else
+	{
+		perror(node->args[0]);
+		exit(126);
+	}
+}
+
+void	find_path_and_exec(t_ast_node *node, t_map_str_str **env)
+{
+	char	*cmd_path;
+	char	**env_array;
+
+	check_not_exec(node);
+	cmd_path = find_cmd_path(*env, node->args[0]);
+	if (cmd_path == NULL)
+		cmd_path = node->args[0];
+	env_array = map_as_c_array(*env);
+	execve(cmd_path, node->args, env_array);
+	ft_free(env_array);
+	check_is_error(node);
+}
+
 int	exec_command(t_ast_node *node, t_map_str_str **env, int *last_exit)
 {
-	pid_t		pid;
-	int			status;
-	struct stat	st;
-	char		*cmd_path;
-	char		**env_array;
+	pid_t	pid;
+	int		status;
 
 	if (!node || node->type != NODE_COMMAND)
 		return (1);
@@ -64,110 +119,7 @@ int	exec_command(t_ast_node *node, t_map_str_str **env, int *last_exit)
 	if (pid == -1)
 		return (1);
 	if (pid == 0)
-	{
-		if (strchr(node->args[0], '/') != NULL)
-		{
-			if (stat(node->args[0], &st) == 0 && S_ISDIR(st.st_mode))
-			{
-				fprintf(stderr, "%s: is a directory\n", node->args[0]);
-				exit(126);
-			}
-			if (access(node->args[0], F_OK) != 0)
-			{
-				perror(node->args[0]);
-				exit(127);
-			}
-			if (access(node->args[0], X_OK) != 0)
-			{
-				perror(node->args[0]);
-				exit(126);
-			}
-		}
-		cmd_path = find_cmd_path(*env, node->args[0]);
-		if (cmd_path == NULL)
-			cmd_path = node->args[0];
-		env_array = map_as_c_array(*env);
-		execve(cmd_path, node->args, env_array);
-		ft_free(env_array);
-		if (errno == ENOENT)
-		{
-			fprintf(stderr, "%s: command not found\n", node->args[0]);
-			exit(127);
-		}
-		else if (errno == EACCES)
-		{
-			perror(node->args[0]);
-			exit(126);
-		}
-		else
-		{
-			perror(node->args[0]);
-			exit(126);
-		}
-	}
+		find_path_and_exec(node, env);
 	waitpid(pid, &status, 0);
 	return (get_exit_status(status));
-}
-
-char	*strip_quotes(const char *s)
-{
-	char	*out;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	out = malloc(ft_strlen(s) + 1);
-	if (!out)
-		return (NULL);
-	while (s[i])
-	{
-		if (s[i] != '\'' && s[i] != '"')
-			out[j++] = s[i];
-		i++;
-	}
-	out[j] = '\0';
-	return (out);
-}
-
-int	safe_open(enum e_node_type type, char *filename)
-{
-	int	fd;
-
-	if (!filename)
-		return (-1);
-	fd = -1;
-	if (type == NODE_REDIRECT_IN)
-		fd = open(filename, O_RDONLY);
-	else if (type == NODE_REDIRECT_OUT)
-		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, USER_RW_OTHERS_R);
-	else if (type == NODE_REDIRECT_APPEND)
-		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, USER_RW_OTHERS_R);
-	if (fd == -1)
-		perror(filename);
-	return (fd);
-}
-
-int	exec_node(t_ast_node *node, t_map_str_str **env, int *status)
-{
-	if (!node)
-		return (-1);
-	if (node->type == NODE_COMMAND)
-		return (exec_command(node, env, status));
-	else if (node->type == NODE_PIPE)
-		return (exec_pipe(node, env, status));
-	else if (node->type == NODE_REDIRECT_IN)
-		return (exec_redirect_in(node, env, status));
-	else if (node->type == NODE_REDIRECT_OUT
-		|| node->type == NODE_REDIRECT_APPEND)
-		return (exec_redirect(node, env, status));
-	else if (node->type == NODE_HEREDOC)
-		return (exec_heredoc(node, env, status));
-	return (1);
-}
-
-int	exec_ast(t_ast_node *node, t_map_str_str **env, int *status)
-{
-	get_all_heredoc_content(node);
-	return (exec_node(node, env, status));
 }

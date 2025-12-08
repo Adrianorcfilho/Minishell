@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:12:45 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:13:30 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 22:43:30 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,7 @@ int	exec_command_in_pipeline(t_cmd_exec *data)
 		}
 		fd = 3;
 		while (fd < 256)
-		{
-			close(fd);
-			fd++;
-		}
+			close(fd++);
 		exit(exec_node(data->cmd, data->env, data->status));
 	}
 	return (pid);

@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:15:10 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 23:45:36 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ static char	*strip_quotes(const char *str)
 	len = ft_strlen(str);
 	if (len >= 2)
 	{
-		if ((str[0] == '"' && str[len - 1] == '"') || (str[0] == '\'' && str[len
-				- 1] == '\''))
+		if ((str[0] == '"' && str[len - 1] == '"')
+			|| (str[0] == '\'' && str[len - 1] == '\''))
 		{
 			result = ft_substr(str, 1, len - 2);
 			return (result);
@@ -49,10 +49,7 @@ static t_ast_node	*handle_redirection(t_ast_node *cmd_node, t_token **current)
 	token = *current;
 	redirect_node = create_ast_node(token_type_to_node_type(token->type));
 	if (!redirect_node)
-	{
-		free_ast(cmd_node);
-		return (NULL);
-	}
+		return (free_ast(cmd_node), NULL);
 	token = token->next;
 	if (!token || token->type != TOKEN_TYPE_WORD)
 	{

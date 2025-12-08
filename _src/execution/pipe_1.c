@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:49:18 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 23:06:30 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 22:41:02 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,24 @@ void	setup_pipe_fds(int *fd, int *output_fd, int i, int count)
 		*output_fd = STDOUT_FILENO;
 }
 
+void	exec_cmd_loop_close(t_io_fd *io, int i, int fd[2], int count)
+{
+	if (io->output_fd != STDOUT_FILENO)
+		close(io->output_fd);
+	if (io->input_fd != STDIN_FILENO)
+		close(io->input_fd);
+	if (i < count - 1)
+		io->input_fd = fd[0];
+}
+
 int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids)
 {
 	int			i;
 	int			fd[2];
-	int			input_fd;
-	int			output_fd;
+	t_io_fd		io;
 	t_cmd_exec	cmd_data;
 
-	input_fd = STDIN_FILENO;
+	io.input_fd = STDIN_FILENO;
 	i = 0;
 	while (i < pipeline->count)
 	{
@@ -49,19 +58,14 @@ int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids)
 		{
 			if (pipe(fd) == -1)
 				return (-1);
-			output_fd = fd[1];
+			io.output_fd = fd[1];
 		}
 		else
-			output_fd = STDOUT_FILENO;
+			io.output_fd = STDOUT_FILENO;
 		cmd_data = (t_cmd_exec){pipeline->cmds[i], pipeline->env,
-			pipeline->status, input_fd, output_fd};
+			pipeline->status, io.input_fd, io.output_fd};
 		pids[i] = exec_command_in_pipeline(&cmd_data);
-		if (output_fd != STDOUT_FILENO)
-			close(output_fd);
-		if (input_fd != STDIN_FILENO)
-			close(input_fd);
-		if (i < pipeline->count - 1)
-			input_fd = fd[0];
+		exec_cmd_loop_close(&io, i, fd, pipeline->count);
 		i++;
 	}
 	return (0);
@@ -83,11 +87,11 @@ int	exec_pipeline_commands(t_pipeline *pipeline)
 
 int	exec_pipe(t_ast_node *node, t_map_str_str **env, int *status)
 {
-	t_ast_node **cmds;
-	int count;
-	int idx;
-	int result;
-	t_pipeline pipeline;
+	t_ast_node	**cmds;
+	int			count;
+	int			idx;
+	int			result;
+	t_pipeline	pipeline;
 
 	count = count_pipeline(node);
 	cmds = malloc(sizeof(t_ast_node *) * count);

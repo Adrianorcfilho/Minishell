@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 10:29:59 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:59:37 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 23:50:03 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	builtin_exit(t_ast_node *node, t_map_str_str **env, int *exit_status)
 {
 	long long	code;
 
-	(void)env; 
+	(void)env;
 	printf("exit\n");
 	if (node->arg_count == 1)
 		exit(*exit_status);

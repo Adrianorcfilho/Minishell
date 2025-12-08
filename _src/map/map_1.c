@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:41:58 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/07 23:35:58 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,34 +53,6 @@ int	map_set(t_map_str_str **env, const char *key, const char *value)
 	return (0);
 }
 
-int	map_unset(t_map_str_str **env, const char *key)
-{
-	t_map_str_str	*curr;
-	t_map_str_str	*prev;
-
-	prev = NULL;
-	if (!env || !*env || !key)
-		return (-1);
-	curr = *env;
-	while (curr)
-	{
-		if (ft_strcmp(curr->key, key) == 0)
-		{
-			if (prev)
-				prev->next = curr->next;
-			else
-				*env = curr->next;
-			free(curr->key);
-			free(curr->value);
-			free(curr);
-			return (0);
-		}
-		prev = curr;
-		curr = curr->next;
-	}
-	return (-1);
-}
-
 static t_map_str_str	*parse_and_create_node(char *env_line)
 {
 	char			*equals;
@@ -100,6 +72,13 @@ static t_map_str_str	*parse_and_create_node(char *env_line)
 	return (new);
 }
 
+int	set_two_null(t_map_str_str **a, t_map_str_str **b)
+{
+	*a = NULL;
+	*b = NULL;
+	return (1);
+}
+
 t_map_str_str	*env_init(char **env)
 {
 	t_map_str_str	*head;
@@ -107,10 +86,8 @@ t_map_str_str	*env_init(char **env)
 	t_map_str_str	*new;
 	int				i;
 
-	if (!env)
+	if (set_two_null(&head, &curr) & (!env))
 		return (NULL);
-	head = NULL;
-	curr = NULL;
 	i = 0;
 	while (env[i])
 	{
