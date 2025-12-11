@@ -178,7 +178,8 @@ void	free_ast(t_ast_node *node)
 		i = 0;
 		while (i < node->arg_count)
 		{
-			free(node->args[i]);
+		    if (node->args[i])
+		        free(node->args[i]);
 			i++;
 		}
 		free(node->args);

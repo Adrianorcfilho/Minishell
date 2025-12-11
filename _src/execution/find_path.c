@@ -34,7 +34,11 @@ char	*find_cmd_path(t_map_str_str *map, char *prog)
 	char	**hold;
 
 	path = map_get(map, "PATH");
+	if (!path)
+	    return (NULL);
 	paths = ft_split(path, ':');
+	if (!paths)
+	    return (NULL);
 	hold = paths;
 	while (*paths)
 	{
@@ -49,6 +53,7 @@ char	*find_cmd_path(t_map_str_str *map, char *prog)
 			ft_free(hold);
 			return (candidate);
 		}
+		free(candidate);
 		paths = paths + 1;
 	}
 	ft_free(hold);

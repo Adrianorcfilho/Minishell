@@ -26,6 +26,7 @@ void	*ft_memcpy(void *dst, const void *src, size_t n);
 char	*ft_strcpy(char *s1, char *s2);
 void	*ft_realloc(void *ptr, size_t size);
 void	ft_putendl_fd(char *str, int fd);
+void	ft_putstr_fd(char *str, int fd);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 int		ft_atoi(const char *str);
 int		ft_isdigit(int c);

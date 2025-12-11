@@ -97,7 +97,15 @@ void	find_path_and_exec(t_ast_node *node, t_map_str_str **env)
 	check_not_exec(node);
 	cmd_path = find_cmd_path(*env, node->args[0]);
 	if (cmd_path == NULL)
+	{
+		if (ft_strchr(node->args[0], '/') == NULL)
+		{
+    		ft_putstr_fd(node->args[0], 2);
+            ft_putstr_fd(": command not found\n", 2);
+            exit(127);
+		}
 		cmd_path = node->args[0];
+	}
 	env_array = map_as_c_array(*env);
 	execve(cmd_path, node->args, env_array);
 	ft_free(env_array);
