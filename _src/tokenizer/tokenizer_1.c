@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:15 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/08 00:54:48 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:10:41 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	handle_word(char *input, t_token **tokens)
 	handle_word_check_quotes(input, &in_quote, &i);
 	word = ft_strndup(input, i);
 	if (!word)
-	    return (i);
+		return (i);
 	link_tokens(tokens, create_token(TOKEN_TYPE_WORD, word));
 	free(word);
 	return (i);

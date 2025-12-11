@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:25 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/25 09:34:26 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/11 18:22:20 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ int	is_builtin(const char *cmd)
 	if (ft_strcmp(cmd, "unset") == 0)
 		return (1);
 	if (ft_strcmp(cmd, "env") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "echo") == 0)
 		return (1);
 	return (0);
 }

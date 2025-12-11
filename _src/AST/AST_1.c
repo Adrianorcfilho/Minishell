@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 23:45:36 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:13:53 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ static t_ast_node	*handle_redirection(t_ast_node *cmd_node, t_token **current)
 	return (redirect_node);
 }
 
+#define TK_TYPE_TO_ND_TYPE token_type_to_node_type 
+
 t_ast_node	*parse_simple_command(t_token **current)
 {
 	t_ast_node	*cmd_node;
@@ -90,7 +92,7 @@ t_ast_node	*parse_simple_command(t_token **current)
 		else if (token->type >= TOKEN_TYPE_REDIRECT_IN
 			&& token->type <= TOKEN_TYPE_HEREDOC)
 		{
-			redirect_node = create_ast_node(token_type_to_node_type(token->type));
+			redirect_node = create_ast_node(TK_TYPE_TO_ND_TYPE(token->type));
 			if (!redirect_node)
 			{
 				free_ast(root);
@@ -178,8 +180,8 @@ void	free_ast(t_ast_node *node)
 		i = 0;
 		while (i < node->arg_count)
 		{
-		    if (node->args[i])
-		        free(node->args[i]);
+			if (node->args[i])
+				free(node->args[i]);
 			i++;
 		}
 		free(node->args);

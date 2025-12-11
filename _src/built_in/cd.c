@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:04 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/08 00:18:54 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:32:00 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	check_old_path(t_ast_node *node, t_map_str_str **env, char **path)
 	return (1);
 }
 
-int	builtin_cd(t_ast_node *node, t_map_str_str **env)
+int	builtin_cd(t_ast_node *node, t_map_str_str **env, t_global_vars *vars)
 {
 	char	*path;
 	char	old_pwd[PATH_MAX];
@@ -76,7 +76,17 @@ int	builtin_cd(t_ast_node *node, t_map_str_str **env)
 	if (node->arg_count > 2)
 		return (fprintf(stderr, "cd: too many arguments\n"), 1);
 	if (getcwd(old_pwd, PATH_MAX) == NULL)
-		return (perror("cd: getcwd"), 1);
+	{
+		if (check_old_path(node, env, &path))
+		{
+			if (chdir(path) == -1)
+			{
+				printf("Sera que estou aqui?\n");
+				return (perror("cd"), 1);
+			}
+		}
+		return (1);
+	}
 	if (check_old_path(node, env, &path) == 0)
 		return (1);
 	if (!path)
@@ -87,6 +97,7 @@ int	builtin_cd(t_ast_node *node, t_map_str_str **env)
 	{
 		map_set(env, "OLDPWD", old_pwd);
 		map_set(env, "PWD", new_pwd);
+		vars->const_pwd = new_pwd;
 	}
 	return (0);
 }

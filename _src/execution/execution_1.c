@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 22:21:39 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:18:21 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <error_log.h>
 #include <execution.h>
 #include <fcntl.h>
+#include <map.h>
 #include <minilibft.h>
 #include <permitions.h>
 #include <stdio.h>
@@ -91,14 +92,14 @@ void	create_dup2_error(t_ast_node *redirs[1024], int fds[1024], int count,
 }
 
 void	create_dup2(t_create_dup2_var_list d_list, t_map_str_str **env,
-		int count, int *status)
+		t_global_vars *vars, int *status)
 {
 	int	result;
 	int	i;
 
-	i = count - 1;
-	create_dup2_error(d_list.redirs, d_list.fds, count, &i);
-	i = count - 1;
+	i = d_list.count - 1;
+	create_dup2_error(d_list.redirs, d_list.fds, d_list.count, &i);
+	i = d_list.count - 1;
 	while (i >= 0)
 	{
 		if (d_list.redirs[i]->type == NODE_REDIRECT_IN)
@@ -108,11 +109,12 @@ void	create_dup2(t_create_dup2_var_list d_list, t_map_str_str **env,
 		close(d_list.fds[i]);
 		i--;
 	}
-	result = exec_node(d_list.curr, env, status);
+	result = exec_node(d_list.curr, env, vars, status);
 	exit(result);
 }
 
-int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
+int	exec_redirect(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
+		int *status)
 {
 	t_ast_node				*redirs[1024];
 	int						fds[1024];
@@ -134,8 +136,8 @@ int	exec_redirect(t_ast_node *node, t_map_str_str **env, int *status)
 	if (v_list.pid == -1)
 		return (1);
 	if (v_list.pid == 0)
-		create_dup2((t_create_dup2_var_list){redirs, fds, curr}, env,
-			v_list.count, status);
+		create_dup2((t_create_dup2_var_list){redirs, fds, v_list.count, curr},
+			env, vars, status);
 	waitpid(v_list.pid, &v_list.wstatus, 0);
 	return (get_exit_status(v_list.wstatus));
 }

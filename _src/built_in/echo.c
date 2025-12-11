@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:58:22 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 23:49:44 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:06:56 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_ast_node
 
 #include <AST.h>
 #include <map.h>
+#include <minilibft.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -37,13 +38,14 @@ int	builtin_echo(t_ast_node *node, t_map_str_str *env)
 	if (!node || node->arg_count == 0)
 		return (printf("\n"), 0);
 	has_n_flag = 0;
-	if (node->arg_count > 0 && strcmp(node->args[0], "-n") == 0)
+	if (node->arg_count > 0 && node->args[1] && ft_strncmp(node->args[1], "-n",
+			2) == 0)
 	{
 		has_n_flag = 1;
-		i = 1;
+		i = 2;
 	}
 	else
-		i = 0;
+		i = 1;
 	while (i < node->arg_count)
 	{
 		printf("%s", node->args[i]);

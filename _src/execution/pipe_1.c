@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:49:18 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 22:41:02 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:07:18 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ void	exec_cmd_loop_close(t_io_fd *io, int i, int fd[2], int count)
 		io->input_fd = fd[0];
 }
 
-int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids)
+int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids,
+		t_global_vars *vars)
 {
 	int			i;
 	int			fd[2];
@@ -64,14 +65,14 @@ int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids)
 			io.output_fd = STDOUT_FILENO;
 		cmd_data = (t_cmd_exec){pipeline->cmds[i], pipeline->env,
 			pipeline->status, io.input_fd, io.output_fd};
-		pids[i] = exec_command_in_pipeline(&cmd_data);
+		pids[i] = exec_command_in_pipeline(&cmd_data, vars);
 		exec_cmd_loop_close(&io, i, fd, pipeline->count);
 		i++;
 	}
 	return (0);
 }
 
-int	exec_pipeline_commands(t_pipeline *pipeline)
+int	exec_pipeline_commands(t_pipeline *pipeline, t_global_vars *vars)
 {
 	pid_t	*pids;
 	int		result;
@@ -79,13 +80,14 @@ int	exec_pipeline_commands(t_pipeline *pipeline)
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
 		return (-1);
-	execute_commands_loop(pipeline, pids);
+	execute_commands_loop(pipeline, pids, vars);
 	result = wait_all_processes(pids, pipeline->count);
 	free(pids);
 	return (result);
 }
 
-int	exec_pipe(t_ast_node *node, t_map_str_str **env, int *status)
+int	exec_pipe(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
+		int *status)
 {
 	t_ast_node	**cmds;
 	int			count;
@@ -100,7 +102,7 @@ int	exec_pipe(t_ast_node *node, t_map_str_str **env, int *status)
 	idx = 0;
 	collect_commands(node, cmds, &idx);
 	pipeline = (t_pipeline){cmds, count, env, status};
-	result = exec_pipeline_commands(&pipeline);
+	result = exec_pipeline_commands(&pipeline, vars);
 	free(cmds);
 	return (result);
 }

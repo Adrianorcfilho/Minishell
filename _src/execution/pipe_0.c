@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:12:45 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 22:43:30 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 22:03:05 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	collect_commands(t_ast_node *node, t_ast_node **cmds, int *idx)
 	collect_commands(node->right, cmds, idx);
 }
 
-int	exec_command_in_pipeline(t_cmd_exec *data)
+int	exec_command_in_pipeline(t_cmd_exec *data, t_global_vars *vars)
 {
 	pid_t	pid;
 	int		fd;
@@ -68,7 +68,7 @@ int	exec_command_in_pipeline(t_cmd_exec *data)
 		fd = 3;
 		while (fd < 256)
 			close(fd++);
-		exit(exec_node(data->cmd, data->env, data->status));
+		exit(exec_node(data->cmd, data->env, vars, data->status));
 	}
 	return (pid);
 }

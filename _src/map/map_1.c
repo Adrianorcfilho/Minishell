@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 23:35:58 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:22:29 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,12 @@ int	set_two_null(t_map_str_str **a, t_map_str_str **b)
 	return (1);
 }
 
-t_map_str_str	*env_init(char **env)
+t_map_str_str	*env_init(char **env, t_global_vars *vars)
 {
 	t_map_str_str	*head;
 	t_map_str_str	*curr;
 	t_map_str_str	*new;
+	char			*get_path;
 	int				i;
 
 	if (set_two_null(&head, &curr) & (!env))
@@ -105,6 +106,8 @@ t_map_str_str	*env_init(char **env)
 			curr = new;
 		}
 	}
+	if (map_get(head, "PWD"))
+		vars->const_pwd = ft_strdup(map_get(head, "PWD"));
 	return (head);
 }
 

@@ -14,6 +14,7 @@ SRC 	+= _src/minilibft/ft_memcpy.c
 SRC 	+= _src/minilibft/ft_strcmp.c
 SRC 	+= _src/minilibft/ft_strcpy.c
 SRC 	+= _src/minilibft/ft_realloc.c
+SRC 	+= _src/minilibft/ft_strncmp.c
 SRC 	+= _src/minilibft/ft_putendl_fd.c
 SRC 	+= _src/minilibft/ft_substr.c
 SRC 	+= _src/minilibft/ft_atoi.c

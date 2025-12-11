@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 21:51:52 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/07 21:58:36 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:07:08 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-int	exec_redirect_in(t_ast_node *node, t_map_str_str **env, int *status)
+int	exec_redirect_in(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
+		int *status)
 {
-	return (exec_redirect(node, env, status));
+	return (exec_redirect(node, env, vars, status));
 }
 
 void	print_and_set_error(int *error, char *filename)

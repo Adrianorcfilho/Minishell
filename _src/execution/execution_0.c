@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 21:29:52 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:06:59 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <error_log.h>
 #include <execution.h>
 #include <fcntl.h>
+#include <map.h>
 #include <minilibft.h>
 #include <permitions.h>
 #include <stdio.h>
@@ -25,16 +26,17 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-int	run_builtin(t_ast_node *node, t_map_str_str **env, int *exit_stauts)
+int	run_builtin(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
+		int *exit_stauts)
 {
 	if (!node || !node->args || !node->args[0])
 		return (-1);
 	if (strcmp(node->args[0], "exit") == 0)
 		return (builtin_exit(node, env, exit_stauts));
 	else if (strcmp(node->args[0], "pwd") == 0)
-		return (builtin_pwd());
+		return (builtin_pwd(env, vars));
 	else if (strcmp(node->args[0], "cd") == 0)
-		return (builtin_cd(node, env));
+		return (builtin_cd(node, env, vars));
 	else if (ft_strcmp(node->args[0], "export") == 0)
 		return (builtin_export(node, env));
 	else if (ft_strcmp(node->args[0], "unset") == 0)
@@ -100,9 +102,9 @@ void	find_path_and_exec(t_ast_node *node, t_map_str_str **env)
 	{
 		if (ft_strchr(node->args[0], '/') == NULL)
 		{
-    		ft_putstr_fd(node->args[0], 2);
-            ft_putstr_fd(": command not found\n", 2);
-            exit(127);
+			ft_putstr_fd(node->args[0], 2);
+			ft_putstr_fd(": command not found\n", 2);
+			exit(127);
 		}
 		cmd_path = node->args[0];
 	}
@@ -112,7 +114,8 @@ void	find_path_and_exec(t_ast_node *node, t_map_str_str **env)
 	check_is_error(node);
 }
 
-int	exec_command(t_ast_node *node, t_map_str_str **env, int *last_exit)
+int	exec_command(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
+		int *last_exit)
 {
 	pid_t	pid;
 	int		status;
@@ -122,7 +125,7 @@ int	exec_command(t_ast_node *node, t_map_str_str **env, int *last_exit)
 	if (node->arg_count == 0 || !node->args[0] || !node->args[0][0])
 		return (0);
 	if (is_builtin(node->args[0]))
-		return (run_builtin(node, env, last_exit));
+		return (run_builtin(node, env, vars, last_exit));
 	pid = safe_fork();
 	if (pid == -1)
 		return (1);

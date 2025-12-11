@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   AST.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:37 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 13:55:49 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:14:19 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AST_H
 # define AST_H
+
+# define TK_TYPE_TO_ND_TYPE token_type_to_node_type
 
 # include "tokenizer.h"
 

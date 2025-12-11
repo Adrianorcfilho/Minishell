@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 23:12:13 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/04 23:12:17 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:09:39 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ char	*find_cmd_path(t_map_str_str *map, char *prog)
 
 	path = map_get(map, "PATH");
 	if (!path)
-	    return (NULL);
+		return (NULL);
 	paths = ft_split(path, ':');
 	if (!paths)
-	    return (NULL);
+		return (NULL);
 	hold = paths;
 	while (*paths)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:38:37 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 00:56:16 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:07:10 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ static int	setup_heredoc_pipe(t_ast_node *node, int *pipefd)
 	return (0);
 }
 
-int	exec_heredoc(t_ast_node *node, t_map_str_str **env, int *exit_status)
+int	exec_heredoc(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
+		int *exit_status)
 {
 	int		pipefd[2];
 	pid_t	pid;
@@ -56,7 +57,7 @@ int	exec_heredoc(t_ast_node *node, t_map_str_str **env, int *exit_status)
 		close(pipefd[1]);
 		dup2(pipefd[0], STDIN_FILENO);
 		close(pipefd[0]);
-		exit(exec_node(node->left, env, exit_status));
+		exit(exec_node(node->left, env, vars, exit_status));
 	}
 	close(pipefd[0]);
 	write(pipefd[1], node->heredoc_content, ft_strlen(node->heredoc_content));

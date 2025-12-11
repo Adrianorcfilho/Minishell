@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:42 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 22:36:26 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:15:55 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_create_dup2_var_list
 {
 	t_ast_node			**redirs;
 	int					*fds;
+	int					count;
 	t_ast_node			*curr;
 }						t_create_dup2_var_list;
 
@@ -70,20 +71,22 @@ typedef struct s_io_fd
 }						t_io_fd;
 
 int						exec_ast(t_ast_node *node, t_map_str_str **env,
-							int *status);
+							t_global_vars *vars, int *status);
 
 void					get_all_heredoc_content(t_ast_node *node);
 int						exec_node(t_ast_node *node, t_map_str_str **env,
-							int *status);
+							t_global_vars *vars, int *status);
 
 int						exec_command(t_ast_node *node, t_map_str_str **env,
-							int *last_exit);
+							t_global_vars *vars, int *last_exit);
+
 int						exec_redirect_out(t_ast_node *node);
 int						exec_redirect_in(t_ast_node *node, t_map_str_str **env,
-							int *status);
+							t_global_vars *vars, int *status);
+
 int						exec_redirect_pipe(t_ast_node *node);
 int						exec_heredoc(t_ast_node *node, t_map_str_str **env,
-							int *exit_status);
+							t_global_vars *vars, int *exit_status);
 
 int						get_exit_status(int status);
 int						is_builtin(const char *cmd);
@@ -94,17 +97,19 @@ void					setup_pipe_fds(int *fd, int *output_fd, int i,
 int						count_pipeline(t_ast_node *node);
 void					collect_commands(t_ast_node *node, t_ast_node **cmds,
 							int *idx);
-int						exec_command_in_pipeline(t_cmd_exec *data);
+int						exec_command_in_pipeline(t_cmd_exec *data,
+							t_global_vars *vars);
 void					close_and_update_fd(t_fd_info *info);
 int						wait_all_processes(pid_t *pids, int count);
-int						execute_commands_loop(t_pipeline *pipeline,
-							pid_t *pids);
-int						exec_pipeline_commands(t_pipeline *pipeline);
+int						execute_commands_loop(t_pipeline *pipeline, pid_t *pids,
+							t_global_vars *vars);
+int						exec_pipeline_commands(t_pipeline *pipeline,
+							t_global_vars *vars);
 int						safe_open(enum e_node_type type, char *filename);
 int						exec_redirect(t_ast_node *node, t_map_str_str **env,
-							int *status);
+							t_global_vars *vars, int *status);
 int						exec_pipe(t_ast_node *node, t_map_str_str **env,
-							int *status);
+							t_global_vars *vars, int *status);
 char					*get_heredoc_content(char *delimiter);
 int						filter_empty_args(char **args);
 char					*find_cmd_path(t_map_str_str *map, char *prog);
@@ -113,12 +118,14 @@ void					exe_redir_types(t_ast_node *redirs[1024], int i,
 
 // BUILT INS
 int						run_builtin(t_ast_node *node, t_map_str_str **env,
-							int *exit_stauts);
+							t_global_vars *vars, int *exit_stauts);
 int						builtin_export(t_ast_node *node, t_map_str_str **env);
 int						builtin_env(t_ast_node *node, t_map_str_str *env);
 int						builtin_unset(t_ast_node *node, t_map_str_str **env);
-int						builtin_pwd(void);
-int						builtin_cd(t_ast_node *node, t_map_str_str **env);
+int						builtin_pwd(t_map_str_str **env, t_global_vars *vars);
+
+int						builtin_cd(t_ast_node *node, t_map_str_str **env,
+							t_global_vars *vars);
 int						builtin_exit(t_ast_node *node, t_map_str_str **env,
 							int *exit_status);
 int						builtin_echo(t_ast_node *node, t_map_str_str *env);

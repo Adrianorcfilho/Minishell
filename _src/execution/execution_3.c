@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 21:05:20 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/07 21:05:51 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:07:05 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,26 +64,28 @@ int	safe_open(enum e_node_type type, char *filename)
 	return (fd);
 }
 
-int	exec_node(t_ast_node *node, t_map_str_str **env, int *status)
+int	exec_node(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
+		int *status)
 {
 	if (!node)
 		return (-1);
 	if (node->type == NODE_COMMAND)
-		return (exec_command(node, env, status));
+		return (exec_command(node, env, vars, status));
 	else if (node->type == NODE_PIPE)
-		return (exec_pipe(node, env, status));
+		return (exec_pipe(node, env, vars, status));
 	else if (node->type == NODE_REDIRECT_IN)
-		return (exec_redirect_in(node, env, status));
+		return (exec_redirect_in(node, env, vars, status));
 	else if (node->type == NODE_REDIRECT_OUT
 		|| node->type == NODE_REDIRECT_APPEND)
-		return (exec_redirect(node, env, status));
+		return (exec_redirect(node, env, vars, status));
 	else if (node->type == NODE_HEREDOC)
-		return (exec_heredoc(node, env, status));
+		return (exec_heredoc(node, env, vars, status));
 	return (1);
 }
 
-int	exec_ast(t_ast_node *node, t_map_str_str **env, int *status)
+int	exec_ast(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
+		int *status)
 {
 	get_all_heredoc_content(node);
-	return (exec_node(node, env, status));
+	return (exec_node(node, env, vars, status));
 }

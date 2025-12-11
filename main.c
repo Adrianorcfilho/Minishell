@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:36 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 23:41:15 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 23:21:09 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	expand_tokens(t_token *tokens, t_map_str_str *map_env, int last_status)
 }
 
 static int	process_input(char *prompt, t_map_str_str **map_env,
-		int last_status)
+		t_global_vars *vars, int last_status)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;
@@ -96,7 +96,7 @@ static int	process_input(char *prompt, t_map_str_str **map_env,
 		free_ast(ast);
 		return (2);
 	}
-	last_status = exec_ast(ast, map_env, &last_status);
+	last_status = exec_ast(ast, map_env, vars, &last_status);
 	free_tokens(tokens);
 	free_ast(ast);
 	return (last_status);
@@ -106,10 +106,11 @@ int	main(int argc, char **argv, char **env)
 {
 	char			*prompt;
 	t_map_str_str	*map_env;
+	t_global_vars	vars;
 	int				last_status;
 
 	last_status = 0;
-	map_env = env_init(env);
+	map_env = env_init(env, &vars);
 	setup_signals();
 	while (1)
 	{
@@ -126,7 +127,7 @@ int	main(int argc, char **argv, char **env)
 			last_status = 130;
 			g_signal_received = 0;
 		}
-		last_status = process_input(prompt, &map_env, last_status);
+		last_status = process_input(prompt, &map_env, &vars, last_status);
 		free(prompt);
 	}
 	free_map(map_env);

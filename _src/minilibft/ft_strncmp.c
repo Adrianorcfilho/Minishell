@@ -1,37 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 09:34:12 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:11:00 by adrocha-         ###   ########.fr       */
+/*   Created: 2025/12/11 18:40:56 by adrocha-          #+#    #+#             */
+/*   Updated: 2025/12/11 23:10:01 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <map.h>
-#include <stdio.h>
-#include <unistd.h>
+#include <minilibft.h>
 
-int	builtin_pwd(t_map_str_str **env, t_global_vars *vars)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	char	cwd[4096];
-	char	*path;
+	size_t	i;
 
-	if (getcwd(cwd, sizeof(cwd)))
-	{
-		printf("%s\n", cwd);
+	i = 0;
+	while (i < n && s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	if (i == n)
 		return (0);
-	}
-	else
-	{
-		if (!vars->const_pwd)
-		{
-			perror("pwd");
-			return (1);
-		}
-		printf("%s\n", vars->const_pwd);
-	}
-	return (1);
+	return ((int)(unsigned char)s1[i] - (unsigned char)s2[i]);
 }
