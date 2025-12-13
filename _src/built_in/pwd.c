@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:12 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:11:00 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/13 21:45:38 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 int	builtin_pwd(t_map_str_str **env, t_global_vars *vars)
 {
 	char	cwd[4096];
-	char	*path;
 
+	(void)env;
 	if (getcwd(cwd, sizeof(cwd)))
 	{
 		printf("%s\n", cwd);

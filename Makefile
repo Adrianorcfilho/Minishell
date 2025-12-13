@@ -1,5 +1,5 @@
 NAME 	:= minishell
-CFLAGS	:= -g
+CFLAGS	:= -g -Wall -Werror -Wextra
 INCS	:= -I_inc/
 LIBS	:= -lreadline
 

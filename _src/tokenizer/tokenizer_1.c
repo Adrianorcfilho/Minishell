@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:15 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:10:41 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/13 21:39:14 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	handle_word_check_quotes(char *input, char *in_quote, int *i)
 int	handle_word(char *input, t_token **tokens)
 {
 	char	*word;
-	int		k;
 	int		i;
 	char	in_quote;
 

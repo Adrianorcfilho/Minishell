@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:04 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:32:00 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/12 22:29:12 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ int	builtin_cd(t_ast_node *node, t_map_str_str **env, t_global_vars *vars)
 		{
 			if (chdir(path) == -1)
 			{
-				printf("Sera que estou aqui?\n");
 				return (perror("cd"), 1);
 			}
 		}

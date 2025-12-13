@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AST_0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/28 10:02:54 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/13 21:38:14 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,34 +35,34 @@ t_ast_node	*create_ast_node(t_node_type type)
 	return (node);
 }
 
-static char	*remove_quotes(const char *arg)
-{
-	char	*result;
-	int		i;
-	int		j;
-	char	quote;
+// static char	*remove_quotes(const char *arg)
+// {
+// 	char	*result;
+// 	int		i;
+// 	int		j;
+// 	char	quote;
 
-	result = malloc(ft_strlen(arg) + 1);
-	if (!result)
-		return (NULL);
-	i = 0;
-	j = 0;
-	quote = 0;
-	while (arg[i])
-	{
-		if ((arg[i] == '"' || arg[i] == '\'') && !quote)
-			quote = arg[i++];
-		else if (arg[i] == quote)
-		{
-			quote = 0;
-			i++;
-		}
-		else
-			result[j++] = arg[i++];
-	}
-	result[j] = '\0';
-	return (result);
-}
+// 	result = malloc(ft_strlen(arg) + 1);
+// 	if (!result)
+// 		return (NULL);
+// 	i = 0;
+// 	j = 0;
+// 	quote = 0;
+// 	while (arg[i])
+// 	{
+// 		if ((arg[i] == '"' || arg[i] == '\'') && !quote)
+// 			quote = arg[i++];
+// 		else if (arg[i] == quote)
+// 		{
+// 			quote = 0;
+// 			i++;
+// 		}
+// 		else
+// 			result[j++] = arg[i++];
+// 	}
+// 	result[j] = '\0';
+// 	return (result);
+// }
 
 void	add_arg_to_node(t_ast_node *node, char *arg)
 {

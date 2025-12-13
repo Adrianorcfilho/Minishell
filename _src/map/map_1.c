@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:22:29 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/13 21:41:21 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ t_map_str_str	*env_init(char **env, t_global_vars *vars)
 	t_map_str_str	*head;
 	t_map_str_str	*curr;
 	t_map_str_str	*new;
-	char			*get_path;
 	int				i;
 
 	if (set_two_null(&head, &curr) & (!env))

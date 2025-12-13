@@ -6,11 +6,10 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:18:21 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/13 21:40:03 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map.h"
 #include <AST.h>
 #include <error_log.h>
 #include <execution.h>
@@ -24,48 +23,48 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-static int	setup_input_redirect(t_ast_node *node)
-{
-	int	fd;
+// static int	setup_input_redirect(t_ast_node *node)
+// {
+// 	int	fd;
 
-	if (!node->filename)
-	{
-		fprintf(stderr, "Missing file name for redirection\n");
-		return (-1);
-	}
-	if (!node->left)
-	{
-		fprintf(stderr, "Invalid redirect structure\n");
-		return (-1);
-	}
-	fd = open(node->filename, O_RDONLY);
-	if (fd == -1)
-	{
-		perror(node->filename);
-		return (-1);
-	}
-	return (fd);
-}
+// 	if (!node->filename)
+// 	{
+// 		fprintf(stderr, "Missing file name for redirection\n");
+// 		return (-1);
+// 	}
+// 	if (!node->left)
+// 	{
+// 		fprintf(stderr, "Invalid redirect structure\n");
+// 		return (-1);
+// 	}
+// 	fd = open(node->filename, O_RDONLY);
+// 	if (fd == -1)
+// 	{
+// 		perror(node->filename);
+// 		return (-1);
+// 	}
+// 	return (fd);
+// }
 
-static int	setup_output_redirect(t_ast_node *node)
-{
-	int	fd;
+// static int	setup_output_redirect(t_ast_node *node)
+// {
+// 	int	fd;
 
-	if (!node->filename)
-	{
-		fprintf(stderr, MISSING_FILE_FOR_DIRECTION);
-		return (-1);
-	}
-	if (!node->left)
-	{
-		fprintf(stderr, INVALID_STRUCTURE_FOR_DIRECTION);
-		return (-1);
-	}
-	fd = safe_open(node->type, node->filename);
-	if (fd == -1)
-		return (-1);
-	return (fd);
-}
+// 	if (!node->filename)
+// 	{
+// 		fprintf(stderr, MISSING_FILE_FOR_DIRECTION);
+// 		return (-1);
+// 	}
+// 	if (!node->left)
+// 	{
+// 		fprintf(stderr, INVALID_STRUCTURE_FOR_DIRECTION);
+// 		return (-1);
+// 	}
+// 	fd = safe_open(node->type, node->filename);
+// 	if (fd == -1)
+// 		return (-1);
+// 	return (fd);
+// }
 
 void	create_dup2_error(t_ast_node *redirs[1024], int fds[1024], int count,
 		int *i)

@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:12:45 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 22:03:05 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/13 21:40:29 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ void	close_and_update_fd(t_fd_info *info)
 int	wait_all_processes(pid_t *pids, int count)
 {
 	int		i;
-	int		exit_status;
 	int		last_status;
 	int		status;
 	pid_t	finished;

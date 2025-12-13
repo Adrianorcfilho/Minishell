@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:36 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:21:09 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/13 21:42:52 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,8 @@ int	main(int argc, char **argv, char **env)
 	t_global_vars	vars;
 	int				last_status;
 
+	(void)argc;
+	(void)argv;
 	last_status = 0;
 	map_env = env_init(env, &vars);
 	setup_signals();

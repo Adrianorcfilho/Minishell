@@ -6,7 +6,7 @@
 /*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:13:53 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/13 21:57:41 by adrocha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 // Parse commands,
 // Need to handle things
 
+/*
 static char	*strip_quotes(const char *str)
 {
 	int		len;
@@ -67,8 +68,14 @@ static t_ast_node	*handle_redirection(t_ast_node *cmd_node, t_token **current)
 	*current = token->next;
 	return (redirect_node);
 }
+*/
 
-#define TK_TYPE_TO_ND_TYPE token_type_to_node_type 
+#define TK_TYPE_TO_ND_TYPE token_type_to_node_type
+
+int handle_redir_heredoc(t_token )
+{
+	
+}
 
 t_ast_node	*parse_simple_command(t_token **current)
 {
