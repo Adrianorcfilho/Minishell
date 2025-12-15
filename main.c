@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:36 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/13 21:42:52 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:29:52 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,62 +23,6 @@
 #include <tokenizer.h>
 
 extern volatile sig_atomic_t	g_signal_received;
-
-char	*remove_outer_quotes(char *str)
-{
-	char	*result;
-	char	in_quote;
-	int		i;
-	int		j;
-
-	if (!str)
-		return (NULL);
-	result = malloc(ft_strlen(str) + 1);
-	if (!result)
-		return (NULL);
-	i = 0;
-	j = 0;
-	in_quote = 0;
-	while (str[i])
-	{
-		if (!in_quote && (str[i] == '"' || str[i] == '\''))
-		{
-			in_quote = str[i];
-			i++;
-			continue ;
-		}
-		if (in_quote && str[i] == in_quote)
-		{
-			in_quote = 0;
-			i++;
-			continue ;
-		}
-		result[j++] = str[i++];
-	}
-	result[j] = '\0';
-	return (result);
-}
-
-void	expand_tokens(t_token *tokens, t_map_str_str *map_env, int last_status)
-{
-	t_token	*current;
-	char	*expanded;
-	char	*unquoted;
-
-	current = tokens;
-	while (current)
-	{
-		if (current->type == TOKEN_TYPE_WORD)
-		{
-			expanded = expand_variables(current->value, map_env, last_status);
-			unquoted = remove_outer_quotes(expanded);
-			free(current->value);
-			free(expanded);
-			current->value = unquoted;
-		}
-		current = current->next;
-	}
-}
 
 static int	process_input(char *prompt, t_map_str_str **map_env,
 		t_global_vars *vars, int last_status)
@@ -102,6 +46,37 @@ static int	process_input(char *prompt, t_map_str_str **map_env,
 	return (last_status);
 }
 
+static int	handle_signal_status(int last_status)
+{
+	if (g_signal_received == SIGINT)
+	{
+		g_signal_received = 0;
+		return (130);
+	}
+	return (last_status);
+}
+
+static int	handle_prompt(char *prompt, t_map_str_str **map_env,
+		t_global_vars *vars, int last_status)
+{
+	if (*prompt == '\0')
+	{
+		free(prompt);
+		return (last_status);
+	}
+	last_status = handle_signal_status(last_status);
+	last_status = process_input(prompt, map_env, vars, last_status);
+	free(prompt);
+	return (last_status);
+}
+
+static void	cleanup_shell(t_map_str_str *map_env, int last_status)
+{
+	free_map(map_env);
+	rl_clear_history();
+	exit(last_status);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char			*prompt;
@@ -119,22 +94,10 @@ int	main(int argc, char **argv, char **env)
 		prompt = readline("🐚 ➤ ");
 		if (!prompt)
 			break ;
-		if (*prompt == '\0')
-		{
-			free(prompt);
-			continue ;
-		}
-		if (g_signal_received == SIGINT)
-		{
-			last_status = 130;
-			g_signal_received = 0;
-		}
-		last_status = process_input(prompt, &map_env, &vars, last_status);
-		free(prompt);
+		last_status = handle_prompt(prompt, &map_env, &vars, last_status);
 	}
-	free_map(map_env);
-	rl_clear_history();
-	return (last_status);
+	cleanup_shell(map_env, last_status);
+	return (0);
 }
 
 /*

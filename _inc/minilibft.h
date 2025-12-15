@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minilibft.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:55 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 18:41:49 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:10:45 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 void	ft_free(char **res);
 char	*ft_strjoin(char const *s1, char const *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strncat(char *dest, char *src, unsigned int nb);
+char	*ft_strncpy(char *dest, char *src, unsigned int n);
 
 #endif

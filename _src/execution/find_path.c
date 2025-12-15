@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 23:12:13 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/11 23:09:39 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/15 15:56:32 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,25 @@ static char	*build_fullpath(char *path, const char *cmd)
 	return (abs);
 }
 
+static char	*try_path(char *dir, char *prog)
+{
+	char	*candidate;
+
+	candidate = build_fullpath(dir, prog);
+	if (!candidate)
+		return (NULL);
+	if (access(candidate, X_OK) == 0)
+		return (candidate);
+	free(candidate);
+	return (NULL);
+}
+
 char	*find_cmd_path(t_map_str_str *map, char *prog)
 {
 	char	*path;
-	char	*candidate;
+	char	*result;
 	char	**paths;
-	char	**hold;
+	int		i;
 
 	path = map_get(map, "PATH");
 	if (!path)
@@ -39,23 +52,16 @@ char	*find_cmd_path(t_map_str_str *map, char *prog)
 	paths = ft_split(path, ':');
 	if (!paths)
 		return (NULL);
-	hold = paths;
-	while (*paths)
+	i = -1;
+	while (paths[++i])
 	{
-		candidate = build_fullpath(*paths, prog);
-		if (!candidate)
+		result = try_path(paths[i], prog);
+		if (result)
 		{
-			ft_free(hold);
-			return (NULL);
+			ft_free(paths);
+			return (result);
 		}
-		if (access(candidate, X_OK) == 0)
-		{
-			ft_free(hold);
-			return (candidate);
-		}
-		free(candidate);
-		paths = paths + 1;
 	}
-	ft_free(hold);
+	ft_free(paths);
 	return (NULL);
 }

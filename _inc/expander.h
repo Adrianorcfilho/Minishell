@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:45 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/25 10:00:27 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:25:52 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define EXPANDER_H
 
 # include <map.h>
+# include <tokenizer.h>
 
 typedef struct s_expand_ctx
 {
@@ -36,4 +37,7 @@ int					exp_update_quotes(char c, int *sq, int *dq);
 
 int					calc_expanded_size(const char *str, t_map_str_str *env,
 						int exit_status);
+char				*remove_outer_quotes(char *str);
+void				expand_tokens(t_token *tokens, t_map_str_str *map_env,
+						int last_status);
 #endif

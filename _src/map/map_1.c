@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/13 21:41:21 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/15 15:54:21 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,44 @@ static t_map_str_str	*parse_and_create_node(char *env_line)
 	return (new);
 }
 
+/*
 int	set_two_null(t_map_str_str **a, t_map_str_str **b)
 {
 	*a = NULL;
 	*b = NULL;
 	return (1);
 }
+*/
 
+t_map_str_str	*env_init(char **env, t_global_vars *vars)
+{
+	t_map_str_str	*head;
+	t_map_str_str	*curr;
+	t_map_str_str	*new;
+	int				i;
+
+	if (!env)
+		return (NULL);
+	head = NULL;
+	curr = NULL;
+	i = -1;
+	while (env[++i])
+	{
+		new = parse_and_create_node(env[i]);
+		if (!new)
+			continue ;
+		if (!head)
+			head = new;
+		else
+			curr->next = new;
+		curr = new;
+	}
+	if (head && map_get(head, "PWD"))
+		vars->const_pwd = ft_strdup(map_get(head, "PWD"));
+	return (head);
+}
+
+/*
 t_map_str_str	*env_init(char **env, t_global_vars *vars)
 {
 	t_map_str_str	*head;
@@ -109,6 +140,7 @@ t_map_str_str	*env_init(char **env, t_global_vars *vars)
 		vars->const_pwd = ft_strdup(map_get(head, "PWD"));
 	return (head);
 }
+	*/
 
 /*
 int	main(int argc, char **argv, char **env)

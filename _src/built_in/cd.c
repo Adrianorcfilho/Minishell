@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:04 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/12 22:29:12 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:33:20 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,53 @@ int	check_old_path(t_ast_node *node, t_map_str_str **env, char **path)
 	return (1);
 }
 
+static void	get_old_pwd(char *old_pwd, t_map_str_str **env)
+{
+	char	*saved_oldpwd;
+
+	saved_oldpwd = map_get(*env, "PWD");
+	if (!saved_oldpwd)
+		saved_oldpwd = "";
+	if (getcwd(old_pwd, PATH_MAX) == NULL)
+	{
+		strncpy(old_pwd, saved_oldpwd, PATH_MAX - 1);
+		old_pwd[PATH_MAX - 1] = '\0';
+	}
+}
+
+static void	construct_relative_path(char *new_pwd, char *old_pwd, char *path)
+{
+	size_t	len;
+
+	len = ft_strlen(old_pwd);
+	if (len > 0 && len < PATH_MAX - 2)
+	{
+		ft_strncpy(new_pwd, old_pwd, PATH_MAX - 1);
+		if (new_pwd[len - 1] != '/')
+			ft_strncat(new_pwd, "/", PATH_MAX - len - 1);
+		ft_strncat(new_pwd, path, PATH_MAX - ft_strlen(new_pwd) - 1);
+		new_pwd[PATH_MAX - 1] = '\0';
+	}
+}
+
+static void	update_pwd_vars(t_map_str_str **env, char *old_pwd, char *new_pwd,
+		char *path)
+{
+	map_set(env, "OLDPWD", old_pwd);
+	if (getcwd(new_pwd, PATH_MAX) != NULL)
+		map_set(env, "PWD", new_pwd);
+	else if (path[0] == '/')
+		map_set(env, "PWD", path);
+	else
+	{
+		construct_relative_path(new_pwd, old_pwd, path);
+		if (ft_strlen(new_pwd) > 0)
+			map_set(env, "PWD", new_pwd);
+		else
+			map_set(env, "PWD", path);
+	}
+}
+
 int	builtin_cd(t_ast_node *node, t_map_str_str **env, t_global_vars *vars)
 {
 	char	*path;
@@ -75,28 +122,16 @@ int	builtin_cd(t_ast_node *node, t_map_str_str **env, t_global_vars *vars)
 
 	if (node->arg_count > 2)
 		return (fprintf(stderr, "cd: too many arguments\n"), 1);
-	if (getcwd(old_pwd, PATH_MAX) == NULL)
-	{
-		if (check_old_path(node, env, &path))
-		{
-			if (chdir(path) == -1)
-			{
-				return (perror("cd"), 1);
-			}
-		}
-		return (1);
-	}
+	get_old_pwd(old_pwd, env);
 	if (check_old_path(node, env, &path) == 0)
 		return (1);
 	if (!path)
 		return (fprintf(stderr, "cd: HOME not set\n"), 1);
 	if (chdir(path) == -1)
 		return (perror("cd"), 1);
-	if (getcwd(new_pwd, PATH_MAX) != NULL)
-	{
-		map_set(env, "OLDPWD", old_pwd);
-		map_set(env, "PWD", new_pwd);
-		vars->const_pwd = new_pwd;
-	}
+	update_pwd_vars(env, old_pwd, new_pwd, path);
+	if (vars->const_pwd)
+		free(vars->const_pwd);
+	vars->const_pwd = strdup(map_get(*env, "PWD"));
 	return (0);
 }

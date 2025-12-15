@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AST_1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/13 21:57:41 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:02:17 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,7 @@ static t_ast_node	*handle_redirection(t_ast_node *cmd_node, t_token **current)
 }
 */
 
-#define TK_TYPE_TO_ND_TYPE token_type_to_node_type
-
-int handle_redir_heredoc(t_token )
-{
-	
-}
-
+/*
 t_ast_node	*parse_simple_command(t_token **current)
 {
 	t_ast_node	*cmd_node;
@@ -128,7 +122,9 @@ t_ast_node	*parse_simple_command(t_token **current)
 	*current = token;
 	return (root);
 }
+*/
 
+/*
 t_ast_node	*parse_pipeline(t_token *tokens)
 {
 	t_ast_node	*left;
@@ -172,6 +168,60 @@ t_ast_node	*parse_pipeline(t_token *tokens)
 		pipe_node->left = left;
 		pipe_node->right = right;
 		left = pipe_node;
+	}
+	return (left);
+}
+*/
+
+static int	validate_pipe_token(t_token *token)
+{
+	if (!token || token->type == TOKEN_TYPE_PIPE)
+	{
+		ft_putendl_fd(UNEXPECTED_TK_PIPE, 2);
+		return (0);
+	}
+	return (1);
+}
+
+static t_ast_node	*create_pipe_node(t_ast_node *left, t_ast_node *right)
+{
+	t_ast_node	*pipe_node;
+
+	pipe_node = create_ast_node(NODE_PIPE);
+	if (!pipe_node)
+	{
+		free_ast(left);
+		free_ast(right);
+		return (NULL);
+	}
+	pipe_node->left = left;
+	pipe_node->right = right;
+	return (pipe_node);
+}
+
+t_ast_node	*parse_pipeline(t_token *tokens)
+{
+	t_ast_node	*left;
+	t_ast_node	*right;
+	t_token		*current;
+
+	if (!tokens || tokens->type == TOKEN_TYPE_PIPE)
+		return (ft_putendl_fd(UNEXPECTED_TK_PIPE, 2), NULL);
+	current = tokens;
+	left = parse_simple_command(&current);
+	if (!left)
+		return (NULL);
+	while (current && current->type == TOKEN_TYPE_PIPE)
+	{
+		current = current->next;
+		if (!validate_pipe_token(current))
+			return (free_ast(left), NULL);
+		right = parse_simple_command(&current);
+		if (!right)
+			return (free_ast(left), NULL);
+		left = create_pipe_node(left, right);
+		if (!left)
+			return (NULL);
 	}
 	return (left);
 }
