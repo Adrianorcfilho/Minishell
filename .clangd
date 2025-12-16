@@ -1,4 +1,0 @@
-CompileFlags:
-    Add:
-    - -I/home/ivan/Documents/git/minishell/_inc
-    - -lreadline
