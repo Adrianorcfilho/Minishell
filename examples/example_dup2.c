@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   example_dup2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 23:37:01 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/07 23:37:03 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:10:50 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include <stdio.h>
-#include <string.h>
 #include <unistd.h>
 
 // int	main(void)

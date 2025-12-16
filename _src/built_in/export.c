@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:10 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/08 00:23:36 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 02:48:23 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,14 @@ static int	export_set_pair(char *arg, char *equals, t_map_str_str **env)
 	return (result == -1);
 }
 
+static int	export_error(char *arg)
+{
+	ft_putstr_fd("minishell: export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putendl_fd("': not a valid identifier", 2);
+	return (1);
+}
+
 static int	export_handle_arg(char *arg, t_map_str_str **env)
 {
 	char	*equals;
@@ -55,20 +63,15 @@ static int	export_handle_arg(char *arg, t_map_str_str **env)
 	if (equals)
 	{
 		key = ft_strndup(arg, equals - arg);
-		if (!is_valid_identifier(key))
-		{
-			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n",
-				arg);
-			free(key);
-			return (1);
-		}
-		return (free(key), export_set_pair(arg, equals, env));
+		if (!key || !is_valid_identifier(key))
+			return (free(key), export_error(arg));
+		free(key);
+		return (export_set_pair(arg, equals, env));
 	}
 	else
 	{
 		if (!is_valid_identifier(arg))
-			return (fprintf(stderr,
-					"minishell: export: `%s': not valid\n", arg), 1);
+			return (export_error(arg));
 		if (!map_get(*env, arg))
 			map_set(env, arg, "");
 	}

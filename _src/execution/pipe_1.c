@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:49:18 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:07:18 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:10:37 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include <permitions.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -44,7 +43,7 @@ void	exec_cmd_loop_close(t_io_fd *io, int i, int fd[2], int count)
 }
 
 int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids,
-		t_global_vars *vars)
+		t_global_vars *vars, t_ast_node **cmds)
 {
 	int			i;
 	int			fd[2];
@@ -64,7 +63,7 @@ int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids,
 		else
 			io.output_fd = STDOUT_FILENO;
 		cmd_data = (t_cmd_exec){pipeline->cmds[i], pipeline->env,
-			pipeline->status, io.input_fd, io.output_fd};
+			pipeline->status, io.input_fd, io.output_fd, pids, cmds};
 		pids[i] = exec_command_in_pipeline(&cmd_data, vars);
 		exec_cmd_loop_close(&io, i, fd, pipeline->count);
 		i++;
@@ -72,7 +71,8 @@ int	execute_commands_loop(t_pipeline *pipeline, pid_t *pids,
 	return (0);
 }
 
-int	exec_pipeline_commands(t_pipeline *pipeline, t_global_vars *vars)
+int	exec_pipeline_commands(t_pipeline *pipeline, t_global_vars *vars,
+		t_ast_node **cmds)
 {
 	pid_t	*pids;
 	int		result;
@@ -80,7 +80,7 @@ int	exec_pipeline_commands(t_pipeline *pipeline, t_global_vars *vars)
 	pids = malloc(sizeof(pid_t) * pipeline->count);
 	if (!pids)
 		return (-1);
-	execute_commands_loop(pipeline, pids, vars);
+	execute_commands_loop(pipeline, pids, vars, cmds);
 	result = wait_all_processes(pids, pipeline->count);
 	free(pids);
 	return (result);
@@ -102,7 +102,7 @@ int	exec_pipe(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
 	idx = 0;
 	collect_commands(node, cmds, &idx);
 	pipeline = (t_pipeline){cmds, count, env, status};
-	result = exec_pipeline_commands(&pipeline, vars);
+	result = exec_pipeline_commands(&pipeline, vars, cmds);
 	free(cmds);
 	return (result);
 }

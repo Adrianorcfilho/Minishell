@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 23:12:13 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/15 15:56:32 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/16 02:09:13 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,16 @@
 
 static char	*build_fullpath(char *path, const char *cmd)
 {
+	char	*tmp;
 	char	*abs;
 
 	if (!path || !cmd)
 		return (NULL);
-	abs = ft_strjoin(path, "/");
-	abs = ft_strjoin(abs, cmd);
+	tmp = ft_strjoin(path, "/");
+	if (!tmp)
+		return (NULL);
+	abs = ft_strjoin(tmp, cmd);
+	free(tmp);
 	return (abs);
 }
 

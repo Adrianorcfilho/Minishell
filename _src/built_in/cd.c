@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:04 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/15 16:33:20 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:21:17 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <minilibft.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 /*
 int	builtin_cd(t_ast_node *node, t_map_str_str **env)
@@ -25,7 +24,7 @@ int	builtin_cd(t_ast_node *node, t_map_str_str **env)
 
 	if (node->arg_count > 2)
 	{
-		fprintf(stderr, "cd: too many arguments\n");
+		ft_putstr_fd(stderr, "cd: too many arguments\n");
 		return (1);
 	}
 	if (node->args[1])
@@ -34,7 +33,7 @@ int	builtin_cd(t_ast_node *node, t_map_str_str **env)
 		path = map_get(*env, "HOME");
 	if (!path)
 	{
-		fprintf(stderr, "cd: HOME not set\n");
+		ft_putstr_fd(stderr, "cd: HOME not set\n");
 		return (1);
 	}
 	if (chdir(path) == -1)
@@ -52,11 +51,11 @@ int	check_old_path(t_ast_node *node, t_map_str_str **env, char **path)
 {
 	if (node->args[1])
 	{
-		if (strcmp(node->args[1], "-") == 0)
+		if (ft_strcmp(node->args[1], "-") == 0)
 		{
 			*path = map_get(*env, "OLDPWD");
 			if (!(*path))
-				return (fprintf(stderr, "cd: OLDPWD not set\n"), 0);
+				return (ft_putstr_fd("cd: OLDPWD not set\n", 2), 0);
 			printf("%s\n", *path);
 		}
 		else
@@ -76,7 +75,7 @@ static void	get_old_pwd(char *old_pwd, t_map_str_str **env)
 		saved_oldpwd = "";
 	if (getcwd(old_pwd, PATH_MAX) == NULL)
 	{
-		strncpy(old_pwd, saved_oldpwd, PATH_MAX - 1);
+		ft_strncpy(old_pwd, saved_oldpwd, PATH_MAX - 1);
 		old_pwd[PATH_MAX - 1] = '\0';
 	}
 }
@@ -121,17 +120,17 @@ int	builtin_cd(t_ast_node *node, t_map_str_str **env, t_global_vars *vars)
 	char	new_pwd[PATH_MAX];
 
 	if (node->arg_count > 2)
-		return (fprintf(stderr, "cd: too many arguments\n"), 1);
+		return (ft_putstr_fd("cd: too many arguments\n", 2), 1);
 	get_old_pwd(old_pwd, env);
 	if (check_old_path(node, env, &path) == 0)
 		return (1);
 	if (!path)
-		return (fprintf(stderr, "cd: HOME not set\n"), 1);
+		return (ft_putstr_fd("cd: HOME not set\n", 2), 1);
 	if (chdir(path) == -1)
 		return (perror("cd"), 1);
 	update_pwd_vars(env, old_pwd, new_pwd, path);
 	if (vars->const_pwd)
 		free(vars->const_pwd);
-	vars->const_pwd = strdup(map_get(*env, "PWD"));
+	vars->const_pwd = ft_strdup(map_get(*env, "PWD"));
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:38:37 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:07:10 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 02:44:39 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ static int	setup_heredoc_pipe(t_ast_node *node, int *pipefd)
 {
 	if (!node->heredoc_content)
 	{
-		fprintf(stderr, "Error: heredoc content not available\n");
+		ft_putstr_fd("Error: heredoc content not available\n", 2);
 		return (-1);
 	}
 	if (!node->left || node->left->type != NODE_COMMAND)
 	{
-		fprintf(stderr, "Error: invalid heredoc structure\n");
+		ft_putstr_fd("Error: invalid heredoc structure\n", 2);
 		return (-1);
 	}
 	if (pipe(pipefd) == -1)
@@ -46,6 +46,7 @@ int	exec_heredoc(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
 	int		pipefd[2];
 	pid_t	pid;
 	int		status;
+	int		result;
 
 	if (setup_heredoc_pipe(node, pipefd) == -1)
 		return (1);
@@ -57,7 +58,8 @@ int	exec_heredoc(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
 		close(pipefd[1]);
 		dup2(pipefd[0], STDIN_FILENO);
 		close(pipefd[0]);
-		exit(exec_node(node->left, env, vars, exit_status));
+		result = exec_node(node->left, env, vars, exit_status);
+		cleanup_and_exit(vars, env, result);
 	}
 	close(pipefd[0]);
 	write(pipefd[1], node->heredoc_content, ft_strlen(node->heredoc_content));

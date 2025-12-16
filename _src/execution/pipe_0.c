@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_0.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 23:12:45 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/13 21:40:29 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:10:32 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include <permitions.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -45,43 +44,39 @@ void	collect_commands(t_ast_node *node, t_ast_node **cmds, int *idx)
 	collect_commands(node->right, cmds, idx);
 }
 
+static void	setup_child_process(t_cmd_exec *data, t_global_vars *vars)
+{
+	int	fd;
+
+	free(data->pids);
+	free(data->cmds);
+	if (data->input_fd != STDIN_FILENO)
+	{
+		dup2(data->input_fd, STDIN_FILENO);
+		close(data->input_fd);
+	}
+	if (data->output_fd != STDOUT_FILENO)
+	{
+		dup2(data->output_fd, STDOUT_FILENO);
+		close(data->output_fd);
+	}
+	fd = 3;
+	while (fd < 256)
+		close(fd++);
+	cleanup_and_exit(vars, data->env, exec_node(data->cmd, data->env, vars,
+			data->status));
+}
+
 int	exec_command_in_pipeline(t_cmd_exec *data, t_global_vars *vars)
 {
 	pid_t	pid;
-	int		fd;
 
 	pid = safe_fork();
 	if (pid == -1)
 		return (-1);
 	if (pid == 0)
-	{
-		if (data->input_fd != STDIN_FILENO)
-		{
-			dup2(data->input_fd, STDIN_FILENO);
-			close(data->input_fd);
-		}
-		if (data->output_fd != STDOUT_FILENO)
-		{
-			dup2(data->output_fd, STDOUT_FILENO);
-			close(data->output_fd);
-		}
-		fd = 3;
-		while (fd < 256)
-			close(fd++);
-		exit(exec_node(data->cmd, data->env, vars, data->status));
-	}
+		setup_child_process(data, vars);
 	return (pid);
-}
-
-void	close_and_update_fd(t_fd_info *info)
-{
-	if (*info->input_fd != STDIN_FILENO)
-		close(*info->input_fd);
-	if (info->i < info->count - 1)
-	{
-		close(info->fd[1]);
-		*info->input_fd = info->fd[0];
-	}
 }
 
 int	wait_all_processes(pid_t *pids, int count)

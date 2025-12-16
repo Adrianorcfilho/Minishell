@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AST_0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/13 21:38:14 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:09:02 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <minilibft.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <tokenizer.h>
 
 t_ast_node	*create_ast_node(t_node_type type)

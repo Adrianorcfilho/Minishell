@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:36 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/15 16:29:52 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/16 02:10:02 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,21 @@ static int	process_input(char *prompt, t_map_str_str **map_env,
 	tokens = tokenize(prompt);
 	expand_tokens(tokens, *map_env, last_status);
 	ast = parse_pipeline(tokens);
+	vars->current_tokens = tokens;
+	vars->current_ast = ast;
 	if (!ast || validate_syntax(ast))
 	{
 		free_tokens(tokens);
 		free_ast(ast);
+		vars->current_tokens = NULL;
+		vars->current_ast = NULL;
 		return (2);
 	}
 	last_status = exec_ast(ast, map_env, vars, &last_status);
 	free_tokens(tokens);
 	free_ast(ast);
+	vars->current_tokens = NULL;
+	vars->current_ast = NULL;
 	return (last_status);
 }
 
@@ -70,11 +76,21 @@ static int	handle_prompt(char *prompt, t_map_str_str **map_env,
 	return (last_status);
 }
 
-static void	cleanup_shell(t_map_str_str *map_env, int last_status)
+static int	cleanup_shell(t_map_str_str *map_env, t_global_vars *vars,
+		int last_status)
 {
+	if (vars->current_ast)
+		free_ast(vars->current_ast);
+	if (vars->current_tokens)
+		free_tokens(vars->current_tokens);
 	free_map(map_env);
+	if (vars->const_pwd)
+		free(vars->const_pwd);
+	vars->current_ast = NULL;
+	vars->current_tokens = NULL;
+	vars->const_pwd = NULL;
 	rl_clear_history();
-	exit(last_status);
+	return (last_status);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -86,6 +102,9 @@ int	main(int argc, char **argv, char **env)
 
 	(void)argc;
 	(void)argv;
+	vars.const_pwd = NULL;
+	vars.current_tokens = NULL;
+	vars.current_ast = NULL;
 	last_status = 0;
 	map_env = env_init(env, &vars);
 	setup_signals();
@@ -96,7 +115,7 @@ int	main(int argc, char **argv, char **env)
 			break ;
 		last_status = handle_prompt(prompt, &map_env, &vars, last_status);
 	}
-	cleanup_shell(map_env, last_status);
+	cleanup_shell(map_env, &vars, last_status);
 	return (0);
 }
 

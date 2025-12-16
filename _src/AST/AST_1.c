@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/15 16:02:17 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:11:07 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <minilibft.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <tokenizer.h>
 
 // Parse commands,

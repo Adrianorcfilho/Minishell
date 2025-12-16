@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:55 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/15 16:10:45 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:44:07 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int		ft_isalnum(int c);
 char	*ft_itoa(int num);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 char	*ft_strcpy(char *s1, char *s2);
-void	*ft_realloc(void *ptr, size_t size);
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 void	ft_putendl_fd(char *str, int fd);
 void	ft_putstr_fd(char *str, int fd);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
@@ -38,5 +38,7 @@ char	*ft_strjoin(char const *s1, char const *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strncat(char *dest, char *src, unsigned int nb);
 char	*ft_strncpy(char *dest, char *src, unsigned int n);
+void	ft_putstr_fd(char *s, int fd);
+char	*ft_strcat(char *dest, const char *src);
 
 #endif

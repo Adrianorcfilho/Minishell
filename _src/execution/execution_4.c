@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_4.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 21:51:52 by adrocha-          #+#    #+#             */
-/*   Updated: 2025/12/11 23:07:08 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:10:30 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include <permitions.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
 

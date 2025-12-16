@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 15:58:39 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/15 16:04:21 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:10:22 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <minilibft.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <tokenizer.h>
 
 #define TK_TYPE_TO_ND_TYPE token_type_to_node_type

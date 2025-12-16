@@ -24,6 +24,8 @@ SRC 	+= _src/minilibft/ft_split.c
 SRC 	+= _src/minilibft/ft_strjoin.c
 SRC 	+= _src/minilibft/ft_strncpy.c
 SRC		+= _src/minilibft/ft_strncat.c
+SRC		+= _src/minilibft/ft_strcat.c
+SRC		+= _src/minilibft/ft_putstr_fd.c
 SRC 	+= _src/AST/AST_0.c
 SRC 	+= _src/AST/AST_1.c
 SRC 	+= _src/AST/AST_2.c
@@ -40,6 +42,7 @@ SRC		+= _src/execution/execution_1.c
 SRC		+= _src/execution/execution_2.c
 SRC		+= _src/execution/execution_3.c
 SRC		+= _src/execution/execution_4.c
+SRC		+= _src/execution/execution_5.c
 SRC		+= _src/execution/find_path.c
 SRC		+= _src/execution/pipe_0.c
 SRC		+= _src/execution/pipe_1.c
@@ -62,17 +65,26 @@ SRC 	+= _src/expander/expander_2.c
 SRC 	+= _src/expander/expander_3.c
 SRC 	+= _src/signals/signals.c
 
-$(NAME): $(SRC)
-	@cc $(CFLAGS) $(INCS) $(SRC) -o $(NAME) $(LIBS)
-	@for f in $(SRC); do echo "Compilling $$f..."; done
-	@echo "$(NAME) created."
+OBJ     := $(SRC:.c=.o)
 
 all: $(NAME)
 
+%.o: %.c
+	@echo "Compiling $<..."
+	@cc $(CFLAGS) $(INCS) -c $< -o $@
+
+$(NAME): $(OBJ)
+	@cc $(CFLAGS) $(OBJ) -o $(NAME) $(LIBS)
+	@echo "$(NAME) created."
+
 clean:
-	rm -f _src/*.o
+	@rm -f $(OBJ)
+	@echo "Object files removed."
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@echo "$(NAME) removed."
 
 re: fclean all
+
+.PHONY: all clean fclean re

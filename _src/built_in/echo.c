@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:58:22 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:06:56 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:12:09 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ typedef struct s_ast_node
 #include <map.h>
 #include <minilibft.h>
 #include <stdio.h>
-#include <string.h>
 
 int	builtin_echo(t_ast_node *node, t_map_str_str *env)
 {

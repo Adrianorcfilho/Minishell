@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/13 21:40:03 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:12:17 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include <permitions.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -29,12 +28,12 @@
 
 // 	if (!node->filename)
 // 	{
-// 		fprintf(stderr, "Missing file name for redirection\n");
+// 		ft_putstr_fd(stderr, "Missing file name for redirection\n");
 // 		return (-1);
 // 	}
 // 	if (!node->left)
 // 	{
-// 		fprintf(stderr, "Invalid redirect structure\n");
+// 		ft_putstr_fd(stderr, "Invalid redirect structure\n");
 // 		return (-1);
 // 	}
 // 	fd = open(node->filename, O_RDONLY);
@@ -52,12 +51,12 @@
 
 // 	if (!node->filename)
 // 	{
-// 		fprintf(stderr, MISSING_FILE_FOR_DIRECTION);
+// 		ft_putstr_fd(stderr, MISSING_FILE_FOR_DIRECTION);
 // 		return (-1);
 // 	}
 // 	if (!node->left)
 // 	{
-// 		fprintf(stderr, INVALID_STRUCTURE_FOR_DIRECTION);
+// 		ft_putstr_fd(stderr, INVALID_STRUCTURE_FOR_DIRECTION);
 // 		return (-1);
 // 	}
 // 	fd = safe_open(node->type, node->filename);
@@ -66,7 +65,7 @@
 // 	return (fd);
 // }
 
-void	create_dup2_error(t_ast_node *redirs[1024], int fds[1024], int count,
+int	create_dup2_error(t_ast_node *redirs[1024], int fds[1024], int count,
 		int *i)
 {
 	int	error;
@@ -86,8 +85,9 @@ void	create_dup2_error(t_ast_node *redirs[1024], int fds[1024], int count,
 				close(fds[*i]);
 			(*i)++;
 		}
-		exit(1);
+		return (1);
 	}
+	return (0);
 }
 
 void	create_dup2(t_create_dup2_var_list d_list, t_map_str_str **env,
@@ -97,7 +97,8 @@ void	create_dup2(t_create_dup2_var_list d_list, t_map_str_str **env,
 	int	i;
 
 	i = d_list.count - 1;
-	create_dup2_error(d_list.redirs, d_list.fds, d_list.count, &i);
+	if (create_dup2_error(d_list.redirs, d_list.fds, d_list.count, &i) != 0)
+		cleanup_and_exit(vars, env, 1);
 	i = d_list.count - 1;
 	while (i >= 0)
 	{
@@ -109,7 +110,7 @@ void	create_dup2(t_create_dup2_var_list d_list, t_map_str_str **env,
 		i--;
 	}
 	result = exec_node(d_list.curr, env, vars, status);
-	exit(result);
+	cleanup_and_exit(vars, env, result);
 }
 
 int	exec_redirect(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,

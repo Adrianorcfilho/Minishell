@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:42 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:15:55 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 02:26:16 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ typedef struct s_cmd_exec
 	int					*status;
 	int					input_fd;
 	int					output_fd;
+	pid_t				*pids;
+	t_ast_node			**cmds;
 }						t_cmd_exec;
 
 typedef struct s_pipeline
@@ -102,9 +104,9 @@ int						exec_command_in_pipeline(t_cmd_exec *data,
 void					close_and_update_fd(t_fd_info *info);
 int						wait_all_processes(pid_t *pids, int count);
 int						execute_commands_loop(t_pipeline *pipeline, pid_t *pids,
-							t_global_vars *vars);
+							t_global_vars *vars, t_ast_node **cmds);
 int						exec_pipeline_commands(t_pipeline *pipeline,
-							t_global_vars *vars);
+							t_global_vars *vars, t_ast_node **cmds);
 int						safe_open(enum e_node_type type, char *filename);
 int						exec_redirect(t_ast_node *node, t_map_str_str **env,
 							t_global_vars *vars, int *status);
@@ -123,11 +125,17 @@ int						builtin_export(t_ast_node *node, t_map_str_str **env);
 int						builtin_env(t_ast_node *node, t_map_str_str *env);
 int						builtin_unset(t_ast_node *node, t_map_str_str **env);
 int						builtin_pwd(t_map_str_str **env, t_global_vars *vars);
-
 int						builtin_cd(t_ast_node *node, t_map_str_str **env,
 							t_global_vars *vars);
 int						builtin_exit(t_ast_node *node, t_map_str_str **env,
-							int *exit_status);
+							t_global_vars *vars, int *exit_status);
 int						builtin_echo(t_ast_node *node, t_map_str_str *env);
-
+void					cleanup_and_exit(t_global_vars *vars,
+							t_map_str_str **env, int exit_code);
+void					find_path_and_exec(t_ast_node *node,
+							t_global_vars *vars, t_map_str_str **env);
+void					check_is_error(t_ast_node *node, t_global_vars *vars,
+							t_map_str_str **env);
+void					check_not_exec(t_ast_node *node, t_global_vars *vars,
+							t_map_str_str **env);
 #endif

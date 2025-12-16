@@ -3,19 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   map.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:49 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/11 23:06:43 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 02:10:35 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_H
 # define MAP_H
 
+# include <tokenizer.h>
+# include <AST.h>
+
 typedef struct s_global_vars
 {
 	char					*const_pwd;
+	t_token					*current_tokens;
+	t_ast_node				*current_ast;
 }							t_global_vars;
 
 typedef struct s_map_str_str

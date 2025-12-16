@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:17 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/07 23:14:33 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/16 03:21:38 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <minilibft.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
 t_map_str_str	*map_insert(const char *key, const char *value)
@@ -81,9 +80,9 @@ void	map_arr_creat_env_string(char **map_array, int *count,
 		arr_line_size = ft_strlen(current->key) + 1 + ft_strlen(current->value)
 			+ 1;
 		map_array[*count] = calloc(sizeof(char), arr_line_size);
-		strcat(map_array[*count], current->key);
-		strcat(map_array[*count], "=");
-		strcat(map_array[*count], current->value);
+		ft_strcat(map_array[*count], current->key);
+		ft_strcat(map_array[*count], "=");
+		ft_strcat(map_array[*count], current->value);
 		current = current->next;
 		(*count)++;
 	}
