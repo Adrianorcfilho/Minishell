@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:36 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/16 02:10:02 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/16 22:07:22 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static int	process_input(char *prompt, t_map_str_str **map_env,
 
 	add_history(prompt);
 	tokens = tokenize(prompt);
+	if (!tokens)
+		return (last_status);
 	expand_tokens(tokens, *map_env, last_status);
 	ast = parse_pipeline(tokens);
 	vars->current_tokens = tokens;
