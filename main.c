@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:36 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/16 22:07:22 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/18 00:21:22 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int	main(int argc, char **argv, char **env)
 	last_status = 0;
 	map_env = env_init(env, &vars);
 	setup_signals();
+	rl_catch_signals = 0;
 	while (1)
 	{
 		prompt = readline("🐚 ➤ ");

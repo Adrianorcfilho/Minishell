@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 07:23:22 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/11/27 07:51:39 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/18 00:03:41 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,9 @@ volatile sig_atomic_t	g_signal_received = 0;
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	g_signal_received = SIGINT;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
+	write(1, "\n", 1);
 	rl_replace_line("", 0);
+	rl_on_new_line();
 	rl_redisplay();
 }
 

@@ -63,6 +63,7 @@ SRC 	+= _src/expander/expander_0.c
 SRC 	+= _src/expander/expander_1.c
 SRC 	+= _src/expander/expander_2.c
 SRC 	+= _src/expander/expander_3.c
+SRC 	+= _src/expander/expander_4.c
 SRC 	+= _src/signals/signals.c
 
 OBJ     := $(SRC:.c=.o)

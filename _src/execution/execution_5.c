@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 02:23:07 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/16 03:12:14 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/17 23:44:41 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ void	find_path_and_exec(t_ast_node *node, t_global_vars *vars,
 		cmd_path = node->args[0];
 	}
 	env_array = map_as_c_array(*env);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	execve(cmd_path, node->args, env_array);
 	ft_free(env_array);
 	if (should_free_path)

@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expander_0.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrocha- <adrocha-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:12 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/04 22:42:35 by adrocha-         ###   ########.fr       */
+/*   Updated: 2025/12/18 00:23:25 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <map.h>
 #include <minilibft.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -46,6 +47,14 @@ char	*get_var_value(const char *var_name, t_map_str_str *env,
 	{
 		exit_str = ft_itoa(exit_status);
 		return (exit_str);
+	}
+	else if (ft_strcmp(var_name, "0") == 0)
+	{
+		value = map_get(env, "0");
+		if (value)
+			return (ft_strdup(value));
+		else
+			return (ft_strdup("./minishell"));
 	}
 	value = map_get(env, var_name);
 	if (value)

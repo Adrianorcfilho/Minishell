@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:34:20 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/16 03:21:06 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/17 23:51:55 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <signals.h>
 
 int	run_builtin(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
 		int *exit_stauts)
@@ -102,7 +103,7 @@ int	exec_command(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
 
 	if (!node || node->type != NODE_COMMAND)
 		return (1);
-	if (node->arg_count == 0 || !node->args[0] || !node->args[0][0])
+	if (node->arg_count == 0 || !node->args[0] || node->args[0][0] == '\0')
 		return (0);
 	if (is_builtin(node->args[0]))
 		return (run_builtin(node, env, vars, last_exit));
@@ -111,6 +112,9 @@ int	exec_command(t_ast_node *node, t_map_str_str **env, t_global_vars *vars,
 		return (1);
 	if (pid == 0)
 		find_path_and_exec(node, vars, env);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, 0);
+	setup_signals();
 	return (get_exit_status(status));
 }

@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:33:45 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/15 16:25:52 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/17 23:41:30 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,11 @@ int					calc_expanded_size(const char *str, t_map_str_str *env,
 char				*remove_outer_quotes(char *str);
 void				expand_tokens(t_token *tokens, t_map_str_str *map_env,
 						int last_status);
+int					needs_word_splitting(const char *original,
+						const char *expanded);
+void				link_word_tokens(t_token *head, char **words);
+t_token				*split_into_tokens(const char *str);
+void				find_path_and_exec(t_ast_node *node, t_global_vars *vars,
+						t_map_str_str **env);
+
 #endif

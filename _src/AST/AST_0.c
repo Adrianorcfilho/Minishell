@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:35:57 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/16 03:09:02 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/17 23:17:30 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,9 @@ void	add_arg_to_node(t_ast_node *node, char *arg)
 	char	**new_args;
 	int		i;
 
-	if (!arg || !arg[0])
+	if (!arg)
+		return ;
+	if (!arg[0] && node->arg_count == 0)
 		return ;
 	new_args = malloc(sizeof(char *) * (node->arg_count + 2));
 	if (!new_args)

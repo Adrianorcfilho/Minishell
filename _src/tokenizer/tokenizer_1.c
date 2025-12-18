@@ -6,7 +6,7 @@
 /*   By: ide-abre <ide-abre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 09:36:15 by ide-abre          #+#    #+#             */
-/*   Updated: 2025/12/16 22:02:33 by ide-abre         ###   ########.fr       */
+/*   Updated: 2025/12/17 22:20:40 by ide-abre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	handle_word_check_quotes(char *input, char *in_quote, int *i)
 			(*i)++;
 			continue ;
 		}
-		if (*in_quote == 0 && ft_strchr(" |><", input[*i]))
+		if (*in_quote == 0 && ft_strchr(" \t\n\r\v\f|><", input[*i]))
 			break ;
 		(*i)++;
 	}
@@ -70,7 +70,7 @@ t_token	*tokenize(char *prompt)
 	i = 0;
 	while (prompt[i])
 	{
-		while (prompt[i] && ft_strchr(" ", prompt[i]))
+		while (prompt[i] && ft_strchr(" \t\n\r\v\f", prompt[i]))
 			i++;
 		if (ft_strchr("|><", prompt[i]))
 			i += handle_special(prompt, i, &tokens);
